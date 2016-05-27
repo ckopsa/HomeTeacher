@@ -2,6 +2,7 @@ package coljamkop.tabtest;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -58,6 +59,15 @@ public class FamilyViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_family_list, container, false);
 
+        // Set the button listener
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.familyfab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onListAddFamilyButtonPress();
+            }
+        });
+
         // Set the adapter
         if (view.findViewById(R.id.familylist) instanceof RecyclerView) {
             Context context = view.getContext();
@@ -103,5 +113,6 @@ public class FamilyViewFragment extends Fragment {
     public interface OnFamilyListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Family item);
+        void onListAddFamilyButtonPress();
     }
 }

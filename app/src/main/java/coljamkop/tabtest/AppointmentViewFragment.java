@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
-import coljamkop.tabtest.Content.AppointmentContent;
-import coljamkop.tabtest.Content.AppointmentContent.Appointment;
 import coljamkop.tabtest.Content.FamilyContent;
+
+import static coljamkop.tabtest.Content.FamilyContent.*;
 
 /**
  * A fragment representing a list of Items.
@@ -78,7 +80,7 @@ public class AppointmentViewFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(FamilyContent.getFamilysNextAppointment(), mListener));
+            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(FAMILIES, mListener));
         }
         return view;
     }
@@ -113,7 +115,7 @@ public class AppointmentViewFragment extends Fragment {
      */
     public interface OnAppointmentListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Appointment item);
+        void onListFragmentInteraction(Family family);
 
         void onListAddAppointmentButtonPress();
     }

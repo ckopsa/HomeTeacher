@@ -3,11 +3,14 @@ package coljamkop.tabtest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 
 import java.util.Calendar;
+
+import coljamkop.tabtest.Content.FamilyContent;
 
 /**
  * Created by Aghbac on 5/25/16.
@@ -17,8 +20,11 @@ public class DatePickerFragment extends DialogFragment
 
     OnDatePickerFragmentInteractionListener mListener;
 
-    public static DatePickerFragment newInstance() {
+    public static DatePickerFragment newInstance(FamilyContent.Family selectedFamily) {
         DatePickerFragment fragment = new DatePickerFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("family", selectedFamily);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -35,7 +41,26 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        mListener.onDateSet(year, month, day);
+        Bundle bundle = getArguments();
+        if(bundle.getInt("year", -1) == -1) {
+            bundle.putInt("year", year);
+            bundle.putInt("month", month + 1);
+            bundle.putInt("day", day);
+            mListener.onDateSet(bundle);
+        }
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
     }
 
     @Override
@@ -56,6 +81,6 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public interface OnDatePickerFragmentInteractionListener {
-        public void onDateSet(int year, int month, int day);
+        void onDateSet(Bundle bundle);
     }
 }

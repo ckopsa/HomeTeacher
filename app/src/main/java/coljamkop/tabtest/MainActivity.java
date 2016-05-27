@@ -13,18 +13,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import coljamkop.tabtest.Content.AppointmentContent;
 import coljamkop.tabtest.Content.FamilyContent;
 
-import static coljamkop.tabtest.AddAppointmentFragment.OnAddAppointmentFragmentInteractionListener;
 import static coljamkop.tabtest.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
 import static coljamkop.tabtest.FamilyViewFragment.newInstance;
 
-public class MainActivity extends AppCompatActivity implements AppointmentViewFragment.OnAppointmentListFragmentInteractionListener,
+public class MainActivity extends AppCompatActivity implements
         OnFamilyListFragmentInteractionListener,
-        OnAddAppointmentFragmentInteractionListener,
+        AppointmentViewFragment.OnAppointmentListFragmentInteractionListener,
         TimePickerFragment.OnTimePickerFragmentInteractionListener,
-        DatePickerFragment.OnDatePickerFragmentInteractionListener {
+        DatePickerFragment.OnDatePickerFragmentInteractionListener,
+        FamilyPickerFragment.OnFamilyPickerFragmentInteractionListener,
+        AddFamilyDialogFragment.OnAddFamilyDialogFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -42,50 +42,85 @@ public class MainActivity extends AppCompatActivity implements AppointmentViewFr
     private ViewPager mViewPager;
 
     @Override
-    public void onDateSet(int year, int month, int day) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        //ft.addToBackStack(null);
-        TimePickerFragment.newInstance().show(ft, "dialog");
+    public void onAddFamilySelect(FamilyContent.Family newFamily) {
+        FamilyContent.FAMILIES.add(newFamily);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
     @Override
-    public void onTimeSet(int hourOfDay, int minute) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-        if (prev != null) {
-            ft.remove(prev);
-        }
-    }
-
-
-    @Override
-    public void onAddAppointmentButtonPress(AppointmentContent.Appointment appointment) {
-
-    }
-
-    @Override
-    public void onListFragmentInteraction(AppointmentContent.Appointment item) {
-
-    }
-
-    @Override
-    public void onListAddAppointmentButtonPress() {
+    public void onFamilySelect(FamilyContent.Family selectedFamily) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
         if (prev != null) {
             ft.remove(prev);
         }
         ft.addToBackStack(null);
-        DatePickerFragment.newInstance().show(ft, "dialog");
+        DatePickerFragment.newInstance(selectedFamily).show(ft, "dialog");
     }
 
     @Override
-    public void onListFragmentInteraction(FamilyContent.Family item) {
+    public void onDateSet(Bundle bundle) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        TimePickerFragment.newInstance(bundle).show(ft, "dialog");
+    }
 
+    @Override
+    public void onTimeSet(Bundle bundle) {
+        FamilyContent.Family family = (FamilyContent.Family) bundle.getSerializable("family");
+        if (family != null) {
+            family.addAppointment(bundle.getInt("year"),
+                    bundle.getInt("month"),
+                    bundle.getInt("day"),
+                    bundle.getInt("hourOfDay"),
+                    bundle.getInt("minute"));
+        }
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+    }
+
+    @Override
+    public void onListAddAppointmentButtonPress() {
+        if (FamilyContent.FAMILIES.size() == 0) {
+            Toast toast = Toast.makeText(getApplicationContext(), "No families to visit.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+        else {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+            FamilyPickerFragment.newInstance().show(ft, "dialog");
+        }
+    }
+
+    @Override
+    public void onListFragmentInteraction(FamilyContent.Family family) {
+        if (family.getNextAppointment() == null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            //ft.addToBackStack(null);
+            DatePickerFragment.newInstance(family).show(ft, "dialog");
+        }
+    }
+
+    @Override
+    public void onListAddFamilyButtonPress() {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            //ft.addToBackStack(null);
+            AddFamilyDialogFragment.newInstance().show(ft, "dialog");
     }
 
     @Override
@@ -147,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements AppointmentViewFr
             if (position == 0)
                 return AppointmentViewFragment.newInstance(1);
             else
-                return newInstance(1);
+                return FamilyViewFragment.newInstance(1);
 
         }
 

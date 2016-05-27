@@ -36,7 +36,7 @@ public class MyFamilyRecyclerViewAdapter extends RecyclerView.Adapter<MyFamilyRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).familyName);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
