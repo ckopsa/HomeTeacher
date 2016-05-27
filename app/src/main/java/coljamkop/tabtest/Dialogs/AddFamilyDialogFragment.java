@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import coljamkop.tabtest.Content.FamilyContent;
+import coljamkop.tabtest.R;
 
 public class AddFamilyDialogFragment extends DialogFragment {
 

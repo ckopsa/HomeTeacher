@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.ViewFragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,10 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
-import coljamkop.tabtest.Content.FamilyContent;
+import coljamkop.tabtest.R;
+import coljamkop.tabtest.RecyclerViewAdapters.MyAppointmentRecyclerViewAdapter;
 
 import static coljamkop.tabtest.Content.FamilyContent.*;
 

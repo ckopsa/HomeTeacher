@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.RecyclerViewAdapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import coljamkop.tabtest.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
+import coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
 import coljamkop.tabtest.Content.FamilyContent.Family;
+import coljamkop.tabtest.R;
 
 import java.util.List;
 

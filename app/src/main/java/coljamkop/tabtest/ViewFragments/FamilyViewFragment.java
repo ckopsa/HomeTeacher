@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.ViewFragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Content.FamilyContent.Family;
+import coljamkop.tabtest.R;
+import coljamkop.tabtest.RecyclerViewAdapters.MyFamilyRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.

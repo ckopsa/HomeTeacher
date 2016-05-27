@@ -1,9 +1,8 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.Pickers;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
@@ -42,25 +41,13 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         Bundle bundle = getArguments();
+        // workaround for this bug: http://stackoverflow.com/questions/12436073/datepicker-ondatechangedlistener-called-twice
         if(bundle.getInt("year", -1) == -1) {
             bundle.putInt("year", year);
             bundle.putInt("month", month + 1);
             bundle.putInt("day", day);
             mListener.onDateSet(bundle);
         }
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
     }
 
     @Override

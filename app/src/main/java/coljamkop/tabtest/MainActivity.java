@@ -14,9 +14,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import coljamkop.tabtest.Content.FamilyContent;
+import coljamkop.tabtest.Dialogs.AddFamilyDialogFragment;
+import coljamkop.tabtest.Pickers.DatePickerFragment;
+import coljamkop.tabtest.Pickers.FamilyPickerFragment;
+import coljamkop.tabtest.Pickers.TimePickerFragment;
+import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
+import coljamkop.tabtest.ViewFragments.FamilyViewFragment;
 
-import static coljamkop.tabtest.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
-import static coljamkop.tabtest.FamilyViewFragment.newInstance;
+import static coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity implements
         OnFamilyListFragmentInteractionListener,
