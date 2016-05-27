@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import coljamkop.tabtest.Content.AppointmentContent;
 import coljamkop.tabtest.Content.AppointmentContent.Appointment;
+import coljamkop.tabtest.Content.FamilyContent;
 
 /**
  * A fragment representing a list of Items.
@@ -77,7 +78,7 @@ public class AppointmentViewFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(AppointmentContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(FamilyContent.getFamilysNextAppointment(), mListener));
         }
         return view;
     }

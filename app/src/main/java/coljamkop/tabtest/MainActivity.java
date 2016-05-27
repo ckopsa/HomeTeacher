@@ -1,24 +1,30 @@
 package coljamkop.tabtest;
 
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import coljamkop.tabtest.Content.AppointmentContent;
 import coljamkop.tabtest.Content.FamilyContent;
 
+import static coljamkop.tabtest.AddAppointmentFragment.OnAddAppointmentFragmentInteractionListener;
+import static coljamkop.tabtest.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
+import static coljamkop.tabtest.FamilyViewFragment.newInstance;
+
 public class MainActivity extends AppCompatActivity implements AppointmentViewFragment.OnAppointmentListFragmentInteractionListener,
-        FamilyViewFragment.OnFamilyListFragmentInteractionListener,
-        AddAppointmentFragment.OnAddAppointmentFragmentInteractionListener {
+        OnFamilyListFragmentInteractionListener,
+        OnAddAppointmentFragmentInteractionListener,
+        TimePickerFragment.OnTimePickerFragmentInteractionListener,
+        DatePickerFragment.OnDatePickerFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -36,6 +42,27 @@ public class MainActivity extends AppCompatActivity implements AppointmentViewFr
     private ViewPager mViewPager;
 
     @Override
+    public void onDateSet(int year, int month, int day) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        TimePickerFragment.newInstance().show(ft, "dialog");
+    }
+
+    @Override
+    public void onTimeSet(int hourOfDay, int minute) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+    }
+
+
+    @Override
     public void onAddAppointmentButtonPress(AppointmentContent.Appointment appointment) {
 
     }
@@ -48,7 +75,12 @@ public class MainActivity extends AppCompatActivity implements AppointmentViewFr
     @Override
     public void onListAddAppointmentButtonPress() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, AddAppointmentFragment.newInstance()).commit();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        DatePickerFragment.newInstance().show(ft, "dialog");
     }
 
     @Override
@@ -115,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements AppointmentViewFr
             if (position == 0)
                 return AppointmentViewFragment.newInstance(1);
             else
-                return FamilyViewFragment.newInstance(1);
+                return newInstance(1);
 
         }
 
@@ -137,3 +169,4 @@ public class MainActivity extends AppCompatActivity implements AppointmentViewFr
         }
     }
 }
+

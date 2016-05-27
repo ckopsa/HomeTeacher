@@ -67,7 +67,7 @@ public class FamilyViewFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyFamilyRecyclerViewAdapter(FamilyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyFamilyRecyclerViewAdapter(FamilyContent.FAMILIES, mListener));
         }
         return view;
     }

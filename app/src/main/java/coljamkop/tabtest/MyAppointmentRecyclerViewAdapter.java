@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import coljamkop.tabtest.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
-import coljamkop.tabtest.Content.AppointmentContent.Appointment;
+import coljamkop.tabtest.Content.FamilyContent.Appointment;
 
 import java.util.List;
 
@@ -36,8 +36,8 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getDate());
+        holder.mContentView.setText(mValues.get(position).getTime());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +45,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    //mListener.onListFragmentInteraction(holder.mItem);
                 }
             }
         });
@@ -65,8 +65,8 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.appointment_date);
+            mContentView = (TextView) view.findViewById(R.id.appointment_family);
         }
 
         @Override
