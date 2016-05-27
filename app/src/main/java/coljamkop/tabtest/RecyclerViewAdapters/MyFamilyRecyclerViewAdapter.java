@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.RecyclerViewAdapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import coljamkop.tabtest.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
+import coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
 import coljamkop.tabtest.Content.FamilyContent.Family;
+import coljamkop.tabtest.R;
 
 import java.util.List;
 
@@ -36,8 +37,7 @@ public class MyFamilyRecyclerViewAdapter extends RecyclerView.Adapter<MyFamilyRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mContentView.setText(mValues.get(position).familyName);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,15 +58,13 @@ public class MyFamilyRecyclerViewAdapter extends RecyclerView.Adapter<MyFamilyRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
         public final TextView mContentView;
         public Family mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mContentView = (TextView) view.findViewById(R.id.family_family_name);
         }
 
         @Override

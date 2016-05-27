@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.ViewFragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import coljamkop.tabtest.Content.AppointmentContent;
-import coljamkop.tabtest.Content.AppointmentContent.Appointment;
+import coljamkop.tabtest.R;
+import coljamkop.tabtest.RecyclerViewAdapters.MyAppointmentRecyclerViewAdapter;
+
+import static coljamkop.tabtest.Content.FamilyContent.*;
 
 /**
  * A fragment representing a list of Items.
@@ -77,7 +79,7 @@ public class AppointmentViewFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(AppointmentContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(FAMILIES, mListener));
         }
         return view;
     }
@@ -112,7 +114,7 @@ public class AppointmentViewFragment extends Fragment {
      */
     public interface OnAppointmentListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Appointment item);
+        void onListFragmentInteraction(Family family);
 
         void onListAddAppointmentButtonPress();
     }

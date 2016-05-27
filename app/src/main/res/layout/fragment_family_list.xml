@@ -16,7 +16,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".FamilyViewFragment"
+        tools:context=".ViewFragments.FamilyViewFragment"
         tools:listitem="@layout/fragment_family" />
 
     <android.support.design.widget.FloatingActionButton

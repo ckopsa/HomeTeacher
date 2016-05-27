@@ -1,7 +1,8 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.ViewFragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Content.FamilyContent.Family;
+import coljamkop.tabtest.R;
+import coljamkop.tabtest.RecyclerViewAdapters.MyFamilyRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.
@@ -58,6 +61,15 @@ public class FamilyViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_family_list, container, false);
 
+        // Set the button listener
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.familyfab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.onListAddFamilyButtonPress();
+            }
+        });
+
         // Set the adapter
         if (view.findViewById(R.id.familylist) instanceof RecyclerView) {
             Context context = view.getContext();
@@ -67,7 +79,7 @@ public class FamilyViewFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyFamilyRecyclerViewAdapter(FamilyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new MyFamilyRecyclerViewAdapter(FamilyContent.FAMILIES, mListener));
         }
         return view;
     }
@@ -103,5 +115,6 @@ public class FamilyViewFragment extends Fragment {
     public interface OnFamilyListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Family item);
+        void onListAddFamilyButtonPress();
     }
 }

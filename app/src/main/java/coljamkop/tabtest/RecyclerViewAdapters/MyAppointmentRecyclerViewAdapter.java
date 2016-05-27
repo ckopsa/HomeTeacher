@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package coljamkop.tabtest.RecyclerViewAdapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,23 +6,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import coljamkop.tabtest.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
-import coljamkop.tabtest.Content.AppointmentContent.Appointment;
-
 import java.util.List;
+
+import coljamkop.tabtest.ViewFragments.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
+import coljamkop.tabtest.Content.FamilyContent.Appointment;
+import coljamkop.tabtest.R;
+
+import static coljamkop.tabtest.Content.FamilyContent.Family;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Appointment} and makes a call to the
- * specified {@link AppointmentViewFragment.OnAppointmentListFragmentInteractionListener}.
+ * specified {@link OnAppointmentListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyAppointmentRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Appointment> mValues;
+    private final List<Family> mValues;
     private final OnAppointmentListFragmentInteractionListener mListener;
 
-    public MyAppointmentRecyclerViewAdapter(List<Appointment> items, OnAppointmentListFragmentInteractionListener listener) {
-        mValues = items;
+    public MyAppointmentRecyclerViewAdapter(List<Family> families, OnAppointmentListFragmentInteractionListener listener) {
+        mValues = families;
         mListener = listener;
     }
 
@@ -36,8 +39,14 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        if(holder.mItem.getNextAppointment() == null) {
+            holder.mDateView.setText("No appointment");
+            holder.mTimeView.setText("");
+        } else {
+            holder.mDateView.setText(mValues.get(position).getNextAppointment().getDate());
+            holder.mTimeView.setText(mValues.get(position).getNextAppointment().getTime());
+        }
+        holder.mFamilyNameView.setText(mValues.get(position).toString());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,20 +67,22 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public Appointment mItem;
+        public final TextView mDateView;
+        public final TextView mTimeView;
+        public final TextView mFamilyNameView;
+        public Family mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mDateView = (TextView) view.findViewById(R.id.appointment_date);
+            mTimeView = (TextView) view.findViewById(R.id.appointment_time);
+            mFamilyNameView = (TextView) view.findViewById(R.id.appointment_family);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mFamilyNameView.getText() + "'";
         }
     }
 }
