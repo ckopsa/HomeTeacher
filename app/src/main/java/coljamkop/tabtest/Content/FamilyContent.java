@@ -14,7 +14,7 @@ import java.util.Map;
  * <p/>
  * TODO: Replace all uses of this class before publishing your app.
  */
-public class FamilyContent {
+public class FamilyContent implements Serializable {
 
     /**
      * An array of sample (dummy) items.
@@ -29,12 +29,7 @@ public class FamilyContent {
     private static final int COUNT = 5;
 
     static {
-        // Add some sample items.
-//        addItem(createDummyItem(1, "Johnson"));
-//        addItem(createDummyItem(2, "Whitehead"));
-//        addItem(createDummyItem(3, "Austin"));
-//        addItem(createDummyItem(4, "Vasquez"));
-//        addItem(createDummyItem(5, "Storm"));
+
     }
 
     public static List<Appointment> getFamilysNextAppointment() {
@@ -44,23 +39,14 @@ public class FamilyContent {
         }
         return temp;
     }
-    private static void addItem(Family item) {
-        FAMILIES.add(item);
-        FAMILY_MAP.put(item.familyName, item);
+    public static void addFamily(Family family) {
+        FAMILIES.add(family);
+        FAMILY_MAP.put(family.familyName, family);
     }
 
-    private static Family createDummyItem(int position, String familyName) {
-        Family family = new Family(familyName);
-        return family;
-    }
-
-    private static String makeDetails(int position) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Details about Item: ").append(position);
-        for (int i = 0; i < position; i++) {
-            builder.append("\nMore details information here.");
-        }
-        return builder.toString();
+    public static void removeFamily(Family family) {
+        FAMILIES.remove(family);
+        FAMILY_MAP.remove(family.familyName);
     }
 
     public static String[] getFamilyNames() {
@@ -75,11 +61,14 @@ public class FamilyContent {
      * A dummy item representing a piece of familyName.
      */
     public static class Family implements Serializable {
-        public final String familyName;
+        public String familyName;
+        public String phoneNumber;
         public Deque<Appointment> appointments;
+        private String name;
 
-        public Family(String familyName) {
+        public Family(String familyName, String phoneNumber) {
             this.familyName = familyName;
+            this.phoneNumber = phoneNumber;
             this.appointments = null;
         }
 
@@ -103,6 +92,14 @@ public class FamilyContent {
             } else {
                 return appointments.getFirst();
             }
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public void setName(String name) {
+            this.familyName = name;
         }
     }
 

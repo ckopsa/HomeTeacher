@@ -41,7 +41,7 @@ public class TimePickerFragment extends DialogFragment
         if (bundle.getInt("hourOfDay", -1) == -1) {
             bundle.putInt("hourOfDay", hourOfDay);
             bundle.putInt("minute", minute);
-            mListener.onTimeSet(bundle);
+            mListener.onTimePickerSet(bundle);
         }
     }
 
@@ -63,6 +63,6 @@ public class TimePickerFragment extends DialogFragment
     }
 
     public interface OnTimePickerFragmentInteractionListener {
-        void onTimeSet(Bundle bundle);
+        void onTimePickerSet(Bundle bundle);
     }
 }

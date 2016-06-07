@@ -13,12 +13,13 @@ import android.widget.EditText;
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.R;
 
-public class AddFamilyDialogFragment extends DialogFragment {
+public class SendFamilySMSDialogFragment extends DialogFragment {
 
-    OnAddFamilyDialogFragmentInteractionListener mListener;
+    OnSendFamilySMSDialogFragmentInteractionListener mListener;
 
-    public static AddFamilyDialogFragment newInstance() {
-        AddFamilyDialogFragment fragment = new AddFamilyDialogFragment();
+    public static SendFamilySMSDialogFragment newInstance(Bundle bundle) {
+        SendFamilySMSDialogFragment fragment = new SendFamilySMSDialogFragment();
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -27,25 +28,26 @@ public class AddFamilyDialogFragment extends DialogFragment {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_add_family, null);
+        final View view = inflater.inflate(R.layout.dialog_send_family_sms, null);
 
-        builder.setTitle("Add a family");
+        builder.setTitle("Set up an appointment");
+        final FamilyContent.Family family = (FamilyContent.Family) getArguments().getSerializable("family");
+        final EditText smsMessage = (EditText) view.findViewById(R.id.dialog_send_family_sms_text);
+        smsMessage.setText("Hey " + family.familyName + "s! When can we home teach you guys?");
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
                 // Add action buttons
-                .setPositiveButton("Add Family", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Send Message", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        EditText familyName = (EditText) view.findViewById(R.id.dialog_add_family_familyname);
-                        EditText phoneNumber = (EditText) view.findViewById(R.id.dialog_add_family_phonenumber);
-                        mListener.onAddFamilyDialogConfirm(new FamilyContent.Family(familyName.getText().toString(), phoneNumber.getText().toString()));
+                        mListener.onSendFamilySMSDialogConfirm(family, smsMessage.getText().toString());
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        AddFamilyDialogFragment.this.getDialog().cancel();
+                        SendFamilySMSDialogFragment.this.getDialog().cancel();
                     }
                 });
         return builder.create();
@@ -54,8 +56,8 @@ public class AddFamilyDialogFragment extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnAddFamilyDialogFragmentInteractionListener) {
-            mListener = (OnAddFamilyDialogFragmentInteractionListener) context;
+        if (context instanceof OnSendFamilySMSDialogFragmentInteractionListener) {
+            mListener = (OnSendFamilySMSDialogFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnAddFamilyDialogFragmentInteractionListener");
@@ -68,7 +70,7 @@ public class AddFamilyDialogFragment extends DialogFragment {
         mListener = null;
     }
 
-    public interface OnAddFamilyDialogFragmentInteractionListener {
-        public void onAddFamilyDialogConfirm(FamilyContent.Family newFamily);
+    public interface OnSendFamilySMSDialogFragmentInteractionListener {
+        public void onSendFamilySMSDialogConfirm(FamilyContent.Family family, String smsMessage);
     }
 }

@@ -46,7 +46,7 @@ public class DatePickerFragment extends DialogFragment
             bundle.putInt("year", year);
             bundle.putInt("month", month + 1);
             bundle.putInt("day", day);
-            mListener.onDateSet(bundle);
+            mListener.onDatePickerSet(bundle);
         }
     }
 
@@ -68,6 +68,6 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public interface OnDatePickerFragmentInteractionListener {
-        void onDateSet(Bundle bundle);
+        void onDatePickerSet(Bundle bundle);
     }
 }

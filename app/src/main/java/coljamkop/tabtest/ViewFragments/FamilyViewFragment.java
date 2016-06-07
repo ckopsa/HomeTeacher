@@ -66,7 +66,7 @@ public class FamilyViewFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onListAddFamilyButtonPress();
+                mListener.onFamilyListAddFamilyButtonPress();
             }
         });
 
@@ -114,7 +114,8 @@ public class FamilyViewFragment extends Fragment {
      */
     public interface OnFamilyListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Family item);
-        void onListAddFamilyButtonPress();
+        void onFamilyListFragmentInteraction(Family item);
+        void onFamilyListAddFamilyButtonPress();
+        void onFamilyListLongClick(Family family);
     }
 }

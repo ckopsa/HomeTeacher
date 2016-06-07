@@ -114,7 +114,7 @@ public class AppointmentViewFragment extends Fragment {
      */
     public interface OnAppointmentListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(Family family);
+        void onAppointmentListFragmentInteraction(Family family);
 
         void onListAddAppointmentButtonPress();
     }

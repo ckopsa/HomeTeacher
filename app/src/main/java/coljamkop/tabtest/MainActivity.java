@@ -1,6 +1,7 @@
 package coljamkop.tabtest;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,12 +10,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.nio.BufferUnderflowException;
+
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Dialogs.AddFamilyDialogFragment;
+import coljamkop.tabtest.Dialogs.EditFamilyDialogFragment;
+import coljamkop.tabtest.Dialogs.FamilyOptionsDialogFragment;
+import coljamkop.tabtest.Dialogs.SendFamilySMSDialogFragment;
 import coljamkop.tabtest.Pickers.DatePickerFragment;
 import coljamkop.tabtest.Pickers.FamilyPickerFragment;
 import coljamkop.tabtest.Pickers.TimePickerFragment;
@@ -29,7 +36,10 @@ public class MainActivity extends AppCompatActivity implements
         TimePickerFragment.OnTimePickerFragmentInteractionListener,
         DatePickerFragment.OnDatePickerFragmentInteractionListener,
         FamilyPickerFragment.OnFamilyPickerFragmentInteractionListener,
-        AddFamilyDialogFragment.OnAddFamilyDialogFragmentInteractionListener {
+        AddFamilyDialogFragment.OnAddFamilyDialogFragmentInteractionListener,
+        SendFamilySMSDialogFragment.OnSendFamilySMSDialogFragmentInteractionListener,
+        FamilyOptionsDialogFragment.OnFamilyOptionsDialogFragmentInteractionListener,
+        EditFamilyDialogFragment.OnEditFamilyDialogFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -46,46 +56,102 @@ public class MainActivity extends AppCompatActivity implements
      */
     private ViewPager mViewPager;
 
+    /*
+     * FamilyView Interfaces
+     */
+
     @Override
-    public void onAddFamilySelect(FamilyContent.Family newFamily) {
-        FamilyContent.FAMILIES.add(newFamily);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+    public void onAddFamilyDialogConfirm(FamilyContent.Family newFamily) {
+        FamilyContent.addFamily(newFamily);
+        mSectionsPagerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onFamilySelect(FamilyContent.Family selectedFamily) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-        DatePickerFragment.newInstance(selectedFamily).show(ft, "dialog");
-    }
-
-    @Override
-    public void onDateSet(Bundle bundle) {
+    public void onFamilyListFragmentInteraction(FamilyContent.Family family) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("family", family);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
         if (prev != null) {
             ft.remove(prev);
         }
         //ft.addToBackStack(null);
-        TimePickerFragment.newInstance(bundle).show(ft, "dialog");
+        SendFamilySMSDialogFragment.newInstance(bundle).show(ft, "dialog");
     }
 
     @Override
-    public void onTimeSet(Bundle bundle) {
-        FamilyContent.Family family = (FamilyContent.Family) bundle.getSerializable("family");
-        if (family != null) {
-            family.addAppointment(bundle.getInt("year"),
-                    bundle.getInt("month"),
-                    bundle.getInt("day"),
-                    bundle.getInt("hourOfDay"),
-                    bundle.getInt("minute"));
+    public void onFamilyListAddFamilyButtonPress() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
         }
+        //ft.addToBackStack(null);
+        AddFamilyDialogFragment.newInstance().show(ft, "dialog");
+    }
+
+    @Override
+    public void onFamilyListLongClick(FamilyContent.Family family) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("family", family);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        FamilyOptionsDialogFragment.newInstance(bundle).show(ft, "dialog");
+    }
+
+    @Override
+    public void onEditFamilyOptionSelected(FamilyContent.Family family) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("family", family);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        EditFamilyDialogFragment.newInstance(bundle).show(ft, "dialog");
+    }
+
+    @Override
+    public void onDeleteFamilyOptionSelected(FamilyContent.Family family) {
+        FamilyContent.removeFamily(family);
+        mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSendFamilySMSOptionSelected(FamilyContent.Family family) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("family", family);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        SendFamilySMSDialogFragment.newInstance(bundle).show(ft, "dialog");
+    }
+
+    @Override
+    public void onEditFamilyFragmentConfirm(FamilyContent.Family family, String familyName, String phoneNumber) {
+        family.setName(familyName);
+        family.setPhoneNumber(phoneNumber);
+        // mSectionsPagerAdapter.notifyDataSetChanged() doesn't update the recycleview after editing
         mViewPager.setAdapter(mSectionsPagerAdapter);
     }
+
+    @Override
+    public void onSendFamilySMSDialogConfirm(FamilyContent.Family family, String smsMessage) {
+        SmsManager smsPhone = SmsManager.getDefault();
+        smsPhone.sendTextMessage(family.phoneNumber, null, smsMessage, null, null);
+    }
+
+    /*
+     * AppointmentView Interfaces
+     */
 
     @Override
     public void onListAddAppointmentButtonPress() {
@@ -105,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onListFragmentInteraction(FamilyContent.Family family) {
+    public void onAppointmentListFragmentInteraction(FamilyContent.Family family) {
         if (family.getNextAppointment() == null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
@@ -118,15 +184,43 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onListAddFamilyButtonPress() {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-            if (prev != null) {
-                ft.remove(prev);
-            }
-            //ft.addToBackStack(null);
-            AddFamilyDialogFragment.newInstance().show(ft, "dialog");
+    public void onFamilyPickerSelect(FamilyContent.Family selectedFamily) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+        DatePickerFragment.newInstance(selectedFamily).show(ft, "dialog");
     }
+
+    @Override
+    public void onDatePickerSet(Bundle bundle) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        TimePickerFragment.newInstance(bundle).show(ft, "dialog");
+    }
+
+    @Override
+    public void onTimePickerSet(Bundle bundle) {
+        FamilyContent.Family family = (FamilyContent.Family) bundle.getSerializable("family");
+        if (family != null) {
+            family.addAppointment(bundle.getInt("year"),
+                    bundle.getInt("month"),
+                    bundle.getInt("day"),
+                    bundle.getInt("hourOfDay"),
+                    bundle.getInt("minute"));
+        }
+        mSectionsPagerAdapter.notifyDataSetChanged();
+    }
+
+    /*
+     * General Methods
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

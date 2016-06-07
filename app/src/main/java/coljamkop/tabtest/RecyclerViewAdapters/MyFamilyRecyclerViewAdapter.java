@@ -45,8 +45,17 @@ public class MyFamilyRecyclerViewAdapter extends RecyclerView.Adapter<MyFamilyRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onFamilyListFragmentInteraction(holder.mItem);
                 }
+            }
+        });
+
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                mListener.onFamilyListLongClick(holder.mItem);
+                return false;
             }
         });
     }

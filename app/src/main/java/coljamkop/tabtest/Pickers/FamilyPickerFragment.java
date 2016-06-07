@@ -28,7 +28,7 @@ public class FamilyPickerFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position
                         // of the selected item
-                        mListener.onFamilySelect(FamilyContent.FAMILIES.get(which));
+                        mListener.onFamilyPickerSelect(FamilyContent.FAMILIES.get(which));
                     }
                 });
         return builder.create();
@@ -52,6 +52,6 @@ public class FamilyPickerFragment extends DialogFragment {
     }
 
     public interface OnFamilyPickerFragmentInteractionListener {
-        public void onFamilySelect(FamilyContent.Family selectedFamily);
+        public void onFamilyPickerSelect(FamilyContent.Family selectedFamily);
     }
 }
