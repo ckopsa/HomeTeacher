@@ -40,13 +40,17 @@ public class DatePickerFragment extends DialogFragment
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        Bundle bundle = getArguments();
-        // workaround for this bug: http://stackoverflow.com/questions/12436073/datepicker-ondatechangedlistener-called-twice
-        if(bundle.getInt("year", -1) == -1) {
-            bundle.putInt("year", year);
-            bundle.putInt("month", month + 1);
-            bundle.putInt("day", day);
-            mListener.onDatePickerSet(bundle);
+        // onDateSet called twice
+        // workaround for this bug found @
+        // http://stackoverflow.com/questions/12436073/datepicker-ondatechangedlistener-called-twice
+        if(view.isShown()) {
+            Bundle bundle = getArguments();
+            if(bundle.getInt("year", -1) == -1) {
+                bundle.putInt("year", year);
+                bundle.putInt("month", month + 1);
+                bundle.putInt("day", day);
+                mListener.onDatePickerSet(bundle);
+            }
         }
     }
 

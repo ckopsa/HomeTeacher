@@ -1,8 +1,11 @@
 package coljamkop.tabtest.Content;
 
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +112,6 @@ public class FamilyContent implements Serializable {
         private int day;
         private int hourOfDay;
         private int minute;
-        private boolean isPassed;
 
         public Appointment(int year, int month, int day, int hourOfDay, int minute) {
             this.year = year;
@@ -124,7 +126,37 @@ public class FamilyContent implements Serializable {
         }
 
         public String getTime() {
-            return String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+            String time;
+            // AM vs PM
+            if (hourOfDay <= 12) {
+                time = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
+                // Ensures time doesn't look like 8:0 or 7:3
+                if (minute == 0)
+                    time += "0";
+                time += " AM";
+            }
+            else {
+                time = String.valueOf(hourOfDay - 12) + ":";
+                // keep 11:03 from looking like 11:3
+                if (minute  > 10)
+                    time += "0";
+                time += String.valueOf(minute);
+                time += " PM";
+            }
+            return time;
+        }
+    }
+    public class FamilyMember {
+        private String name;
+        private String phoneNumber;
+        private String email;
+        private Date birthday;
+
+        public FamilyMember(String name, @Nullable String phoneNumber, @Nullable String email, @Nullable Date birthday) {
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+            this.email = email;
+            this.birthday = birthday;
         }
     }
 }

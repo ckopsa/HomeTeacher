@@ -52,6 +52,6 @@ public class FamilyPickerFragment extends DialogFragment {
     }
 
     public interface OnFamilyPickerFragmentInteractionListener {
-        public void onFamilyPickerSelect(FamilyContent.Family selectedFamily);
+        void onFamilyPickerSelect(FamilyContent.Family selectedFamily);
     }
 }

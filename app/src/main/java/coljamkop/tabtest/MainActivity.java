@@ -1,7 +1,6 @@
 package coljamkop.tabtest;
 
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.nio.BufferUnderflowException;
-
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Dialogs.AddFamilyDialogFragment;
 import coljamkop.tabtest.Dialogs.EditFamilyDialogFragment;
@@ -26,9 +23,11 @@ import coljamkop.tabtest.Pickers.DatePickerFragment;
 import coljamkop.tabtest.Pickers.FamilyPickerFragment;
 import coljamkop.tabtest.Pickers.TimePickerFragment;
 import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
+import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
 import coljamkop.tabtest.ViewFragments.FamilyViewFragment;
 
 import static coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
+import static coljamkop.tabtest.ViewFragments.FamilyViewFragment.newInstance;
 
 public class MainActivity extends AppCompatActivity implements
         OnFamilyListFragmentInteractionListener,
@@ -70,13 +69,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onFamilyListFragmentInteraction(FamilyContent.Family family) {
         Bundle bundle = new Bundle();
         bundle.putSerializable("family", family);
+        FamilyDetailFragment fragment = new FamilyDetailFragment();
+        fragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        //ft.addToBackStack(null);
-        SendFamilySMSDialogFragment.newInstance(bundle).show(ft, "dialog");
+        ft.add(R.id.main_content, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
@@ -165,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
             if (prev != null) {
                 ft.remove(prev);
             }
-            ft.addToBackStack(null);
+            //ft.addToBackStack(null);
             FamilyPickerFragment.newInstance().show(ft, "dialog");
         }
     }
@@ -190,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements
         if (prev != null) {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
         DatePickerFragment.newInstance(selectedFamily).show(ft, "dialog");
     }
 
@@ -201,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements
         if (prev != null) {
             ft.remove(prev);
         }
-        //ft.addToBackStack(null);
         TimePickerFragment.newInstance(bundle).show(ft, "dialog");
     }
 
@@ -215,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
                     bundle.getInt("hourOfDay"),
                     bundle.getInt("minute"));
         }
-        mSectionsPagerAdapter.notifyDataSetChanged();
+        mViewPager.setAdapter(mSectionsPagerAdapter);
     }
 
     /*
@@ -235,10 +231,14 @@ public class MainActivity extends AppCompatActivity implements
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+        if (mViewPager != null) {
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+        }
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+        if (tabLayout != null) {
+            tabLayout.setupWithViewPager(mViewPager);
+        }
     }
 
     @Override
