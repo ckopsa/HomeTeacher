@@ -5,17 +5,19 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/appointment_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
-    <TextView
         android:id="@+id/appointment_family"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
+        android:text="Family"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/appointment_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+        android:text="Date"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
@@ -23,5 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
+        android:text="Time"
         android:textAppearance="?attr/textAppearanceListItem" />
 </LinearLayout>

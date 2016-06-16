@@ -113,7 +113,6 @@ public class FamilyViewFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFamilyListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFamilyListFragmentInteraction(Family item);
         void onFamilyListAddFamilyButtonPress();
         void onFamilyListLongClick(Family family);

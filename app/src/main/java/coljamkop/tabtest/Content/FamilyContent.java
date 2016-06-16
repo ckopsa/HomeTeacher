@@ -29,10 +29,21 @@ public class FamilyContent implements Serializable {
      */
     public static final Map<String, Family> FAMILY_MAP = new HashMap<String, Family>();
 
-    private static final int COUNT = 5;
-
     static {
-
+        Family fam = new Family("Kopsa");
+        fam.setPhoneNumber("5305205087");
+        fam.setPostalAddress("3909 Neal Road, Paradise, CA");
+        fam.setEmailAddress("colton.kopsa@gmail.com");
+        fam.addMember(new FamilyMember("Colton", null, null, null));
+        fam.addMember(new FamilyMember("Kevin", null, null, null));
+        fam.addMember(new FamilyMember("Carson", null, null, null));
+        addFamily(fam);
+        fam = new Family("Gerasymenko");
+        fam.setPhoneNumber("5555555555");
+        fam.setPostalAddress("Ukraine");
+        fam.setEmailAddress("maxymax@gmail.com");
+        fam.addMember(new FamilyMember("Max", null, null, null));
+        addFamily(fam);
     }
 
     public static List<Appointment> getFamilysNextAppointment() {
@@ -66,12 +77,17 @@ public class FamilyContent implements Serializable {
     public static class Family implements Serializable {
         public String familyName;
         public String phoneNumber;
+        public String emailAddress;
+        public String postalAddress;
         public Deque<Appointment> appointments;
-        private String name;
+        public List<FamilyMember> familyMembers;
 
-        public Family(String familyName, String phoneNumber) {
+        public Family(String familyName) {
             this.familyName = familyName;
-            this.phoneNumber = phoneNumber;
+            this.familyMembers = new ArrayList<>();
+            this.phoneNumber = null;
+            this.emailAddress = null;
+            this.postalAddress = null;
             this.appointments = null;
         }
 
@@ -80,13 +96,22 @@ public class FamilyContent implements Serializable {
             return familyName;
         }
 
+        /*
+         * Family Member Methods
+         */
+
+        public void addMember(FamilyMember familyMember) {
+            familyMembers.add(familyMember);
+        }
+
+        /*
+         * Family Appointment Methods
+         */
         public void addAppointment(int year, int month, int day, int hourOfDay, int minute) {
             if (appointments == null) {
                 appointments = new ArrayDeque<>();
-                appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute));
-            } else {
-                appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute));
             }
+            appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute));
         }
 
         public Appointment getNextAppointment() {
@@ -97,12 +122,56 @@ public class FamilyContent implements Serializable {
             }
         }
 
+        /*
+         * Setters & Getters
+         */
+
+        public String getFamilyName() {
+            return familyName;
+        }
+
+        public void setFamilyName(String familyName) {
+            this.familyName = familyName;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
         public void setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
         }
 
-        public void setName(String name) {
-            this.familyName = name;
+        public String getEmailAddress() {
+            return emailAddress;
+        }
+
+        public void setEmailAddress(String emailAddress) {
+            this.emailAddress = emailAddress;
+        }
+
+        public String getPostalAddress() {
+            return postalAddress;
+        }
+
+        public void setPostalAddress(String postalAddress) {
+            this.postalAddress = postalAddress;
+        }
+
+        public String[] getMemberNameArray() {
+            if (familyMembers != null) {
+                List<String> stringMembers = new ArrayList<>();
+                for (FamilyMember member :
+                        familyMembers) {
+                    stringMembers.add(member.name);
+                }
+                return stringMembers.toArray(new String[stringMembers.size()]);
+            } else
+                return null;
+        }
+
+        public List<FamilyMember> getMemberList() {
+            return familyMembers;
         }
     }
 
@@ -138,7 +207,7 @@ public class FamilyContent implements Serializable {
             else {
                 time = String.valueOf(hourOfDay - 12) + ":";
                 // keep 11:03 from looking like 11:3
-                if (minute  > 10)
+                if (minute  < 10)
                     time += "0";
                 time += String.valueOf(minute);
                 time += " PM";
@@ -146,7 +215,7 @@ public class FamilyContent implements Serializable {
             return time;
         }
     }
-    public class FamilyMember {
+    public static class FamilyMember implements Serializable {
         private String name;
         private String phoneNumber;
         private String email;
@@ -157,6 +226,10 @@ public class FamilyContent implements Serializable {
             this.phoneNumber = phoneNumber;
             this.email = email;
             this.birthday = birthday;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

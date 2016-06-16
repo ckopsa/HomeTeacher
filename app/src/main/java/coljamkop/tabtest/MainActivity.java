@@ -1,21 +1,30 @@
 package coljamkop.tabtest;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Dialogs.AddFamilyDialogFragment;
+import coljamkop.tabtest.Dialogs.AddFamilyMemberDialogFragment;
 import coljamkop.tabtest.Dialogs.EditFamilyDialogFragment;
 import coljamkop.tabtest.Dialogs.FamilyOptionsDialogFragment;
 import coljamkop.tabtest.Dialogs.SendFamilySMSDialogFragment;
@@ -38,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements
         AddFamilyDialogFragment.OnAddFamilyDialogFragmentInteractionListener,
         SendFamilySMSDialogFragment.OnSendFamilySMSDialogFragmentInteractionListener,
         FamilyOptionsDialogFragment.OnFamilyOptionsDialogFragmentInteractionListener,
-        EditFamilyDialogFragment.OnEditFamilyDialogFragmentInteractionListener {
+        EditFamilyDialogFragment.OnEditFamilyDialogFragmentInteractionListener,
+        FamilyDetailFragment.OnFamilyDetailFragmentInteractionListener,
+        AddFamilyMemberDialogFragment.OnAddFamilyMemberDialogFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -63,6 +74,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onAddFamilyDialogConfirm(FamilyContent.Family newFamily) {
         FamilyContent.addFamily(newFamily);
         mSectionsPagerAdapter.notifyDataSetChanged();
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.familylist);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -117,7 +133,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onDeleteFamilyOptionSelected(FamilyContent.Family family) {
         FamilyContent.removeFamily(family);
-        mSectionsPagerAdapter.notifyDataSetChanged();
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.familylist);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -135,10 +155,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onEditFamilyFragmentConfirm(FamilyContent.Family family, String familyName, String phoneNumber) {
-        family.setName(familyName);
+        family.setFamilyName(familyName);
         family.setPhoneNumber(phoneNumber);
-        // mSectionsPagerAdapter.notifyDataSetChanged() doesn't update the recycleview after editing
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.familylist);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
 
     @Override
@@ -156,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements
         if (FamilyContent.FAMILIES.size() == 0) {
             Toast toast = Toast.makeText(getApplicationContext(), "No families to visit.", Toast.LENGTH_SHORT);
             toast.show();
-        }
-        else {
+        } else {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
             if (prev != null) {
@@ -215,6 +237,66 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /*
+     * FamilyDetailView Interfaces
+     */
+
+    @Override
+    public void onCallButtonPress(String phoneNumber) {
+        if (!phoneNumber.equals("")) {
+            Uri number = Uri.parse("tel:" + phoneNumber);
+            Intent dial = new Intent(Intent.ACTION_VIEW, number);
+            startActivity(dial);
+        }
+    }
+
+    @Override
+    public void onSMSButtonPress(String phoneNumber) {
+        if (!phoneNumber.equals("")) {
+            Uri number = Uri.parse("sms:" + phoneNumber);
+            Intent sendSMS = new Intent(Intent.ACTION_VIEW, number);
+            startActivity(sendSMS);
+        }
+    }
+
+    @Override
+    public void onEmailButtonPress(String emailAddress) {
+        if (!emailAddress.equals("")) {
+            Uri uriMail = Uri.parse("mailto:" + emailAddress);
+            Intent sendMail = new Intent(Intent.ACTION_VIEW, uriMail);
+            startActivity(sendMail);
+        }
+    }
+
+    @Override
+    public void onMapButtonPress(String postalAddress) {
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + postalAddress);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+    }
+
+    @Override
+    public void addFamilyMember(FamilyContent.Family family) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        //ft.addToBackStack(null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("family", family);
+        AddFamilyMemberDialogFragment.newInstance(bundle).show(ft, "dialog");
+    }
+
+    @Override
+    public void onAddFamilyMemberDialogConfirm(FamilyContent.Family family, FamilyContent.FamilyMember newFamilyMember) {
+        family.addMember(newFamilyMember);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+        recyclerView.getAdapter().notifyDataSetChanged();
+    }
+
+    /*
      * General Methods
      */
 
@@ -239,6 +321,8 @@ public class MainActivity extends AppCompatActivity implements
         if (tabLayout != null) {
             tabLayout.setupWithViewPager(mViewPager);
         }
+
+        //onFamilyListFragmentInteraction(FamilyContent.FAMILY_MAP.get("Kopsa"));
     }
 
     @Override

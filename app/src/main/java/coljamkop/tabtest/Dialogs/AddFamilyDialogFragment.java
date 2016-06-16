@@ -40,7 +40,13 @@ public class AddFamilyDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         EditText familyName = (EditText) view.findViewById(R.id.dialog_add_family_familyname);
                         EditText phoneNumber = (EditText) view.findViewById(R.id.dialog_add_family_phonenumber);
-                        mListener.onAddFamilyDialogConfirm(new FamilyContent.Family(familyName.getText().toString(), phoneNumber.getText().toString()));
+                        EditText emailAddress = (EditText) view.findViewById(R.id.dialog_add_family_email_address);
+                        EditText postalAddress = (EditText) view.findViewById(R.id.dialog_add_family_postal_address);
+                        FamilyContent.Family fam = new FamilyContent.Family(familyName.getText().toString());
+                        fam.setPhoneNumber(phoneNumber.getText().toString());
+                        fam.setEmailAddress(emailAddress.getText().toString());
+                        fam.setPostalAddress(postalAddress .getText().toString());
+                        mListener.onAddFamilyDialogConfirm(fam);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -69,6 +75,6 @@ public class AddFamilyDialogFragment extends DialogFragment {
     }
 
     public interface OnAddFamilyDialogFragmentInteractionListener {
-        public void onAddFamilyDialogConfirm(FamilyContent.Family newFamily);
+        void onAddFamilyDialogConfirm(FamilyContent.Family newFamily);
     }
 }
