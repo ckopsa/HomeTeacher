@@ -1,11 +1,11 @@
 package coljamkop.tabtest.Content;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -30,20 +30,21 @@ public class FamilyContent implements Serializable {
     public static final Map<String, Family> FAMILY_MAP = new HashMap<String, Family>();
 
     static {
-        Family fam = new Family("Kopsa");
-        fam.setPhoneNumber("5305205087");
-        fam.setPostalAddress("3909 Neal Road, Paradise, CA");
-        fam.setEmailAddress("colton.kopsa@gmail.com");
-        fam.addMember(new FamilyMember("Colton", null, null, null));
-        fam.addMember(new FamilyMember("Kevin", null, null, null));
-        fam.addMember(new FamilyMember("Carson", null, null, null));
-        addFamily(fam);
-        fam = new Family("Gerasymenko");
-        fam.setPhoneNumber("5555555555");
-        fam.setPostalAddress("Ukraine");
-        fam.setEmailAddress("maxymax@gmail.com");
-        fam.addMember(new FamilyMember("Max", null, null, null));
-        addFamily(fam);
+
+//        Family fam = new Family("Kopsa");
+//        fam.setPhoneNumber("5305205087");
+//        fam.setPostalAddress("3909 Neal Road, Paradise, CA");
+//        fam.setEmailAddress("colton.kopsa@gmail.com");
+//        fam.addMember(new FamilyMember("Colton", null, null, null));
+//        fam.addMember(new FamilyMember("Kevin", null, null, null));
+//        fam.addMember(new FamilyMember("Carson", null, null, null));
+//        addFamily(fam);
+//        fam = new Family("Gerasymenko");
+//        fam.setPhoneNumber("5555555555");
+//        fam.setPostalAddress("Ukraine");
+//        fam.setEmailAddress("maxymax@gmail.com");
+//        fam.addMember(new FamilyMember("Max", null, null, null));
+//        addFamily(fam);
     }
 
     public static List<Appointment> getFamilysNextAppointment() {
@@ -75,6 +76,7 @@ public class FamilyContent implements Serializable {
      * A dummy item representing a piece of familyName.
      */
     public static class Family implements Serializable {
+        private int id;
         public String familyName;
         public String phoneNumber;
         public String emailAddress;
@@ -83,6 +85,7 @@ public class FamilyContent implements Serializable {
         public List<FamilyMember> familyMembers;
 
         public Family(String familyName) {
+            this.id = System.identityHashCode(this);
             this.familyName = familyName;
             this.familyMembers = new ArrayList<>();
             this.phoneNumber = null;
@@ -111,11 +114,11 @@ public class FamilyContent implements Serializable {
             if (appointments == null) {
                 appointments = new ArrayDeque<>();
             }
-            appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute));
+            appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute, familyName));
         }
 
         public Appointment getNextAppointment() {
-            if (appointments == null) {
+            if (appointments == null || appointments.isEmpty()) {
                 return null;
             } else {
                 return appointments.getFirst();
@@ -132,6 +135,14 @@ public class FamilyContent implements Serializable {
 
         public void setFamilyName(String familyName) {
             this.familyName = familyName;
+            for (FamilyMember member :
+                    getMemberList()) {
+                member.setLastName(familyName);
+            }
+            for (Appointment appointment :
+                    appointments) {
+                appointment.family = familyName;
+            }
         }
 
         public String getPhoneNumber() {
@@ -173,21 +184,78 @@ public class FamilyContent implements Serializable {
         public List<FamilyMember> getMemberList() {
             return familyMembers;
         }
+
+        public boolean deleteNextAppointment() {
+            if(getNextAppointment() != null) {
+                appointments.pop();
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public void addAppointment(String id, String date, String time, String family, int completed) {
+            if (appointments == null) {
+                appointments = new ArrayDeque<>();
+            }
+            appointments.addFirst(new Appointment(id, date, time, family, completed));
+        }
+        public String getID() {
+            return String.valueOf(id);
+        }
+
+        public void setID(String id) {
+            this.id = Integer.parseInt(id);
+        }
     }
 
-    public static class Appointment {
+    public static class Appointment implements Serializable {
+        private int id;
         private int year;
         private int month;
         private int day;
         private int hourOfDay;
         private int minute;
+        private boolean completed;
+        private String family;
 
-        public Appointment(int year, int month, int day, int hourOfDay, int minute) {
+        public Appointment(int year, int month, int day, int hourOfDay, int minute, String family) {
+            this.id = System.identityHashCode(this);
             this.year = year;
             this.month = month;
             this.day = day;
             this.hourOfDay = hourOfDay;
             this.minute = minute;
+            this.completed = false;
+            this.family = family;
+        }
+
+        public Appointment(String id, String date, String time, String family, int completed) {
+            this.id = Integer.parseInt(id);
+            String[] dateArray = date.split("/");
+            month = Integer.parseInt(dateArray[0]);
+            day = Integer.parseInt(dateArray[1]);
+            year = Integer.parseInt(dateArray[2]);
+
+            String[] timeArray = time.split(":|\\ ");
+            if (timeArray[2].equals("PM")) {
+                if (!timeArray.equals("12")) {
+                    this.hourOfDay = 12 + Integer.parseInt(timeArray[0]);
+                    this.minute = Integer.parseInt(timeArray[1]);
+                }
+            } else {
+                this.hourOfDay = Integer.parseInt(timeArray[0]);
+                this.minute = Integer.parseInt(timeArray[1]);
+            }
+            this.family = family;
+            this.completed = completed == 1;
+        }
+
+        public boolean toggleCompleted() {
+            if (this.completed == false)
+                return this.completed = true;
+            else
+                return this.completed = false;
         }
 
         public String getDate() {
@@ -214,15 +282,44 @@ public class FamilyContent implements Serializable {
             }
             return time;
         }
+
+        public boolean getCompleted() {
+            return completed;
+        }
+
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
+        }
+
+        public String getFamily() {
+            return family;
+        }
+
+        public String getID() {
+            return String.valueOf(id);
+        }
     }
     public static class FamilyMember implements Serializable {
+        private int id;
         private String name;
+        private String lastName;
         private String phoneNumber;
         private String email;
-        private Date birthday;
+        private String birthday;
 
-        public FamilyMember(String name, @Nullable String phoneNumber, @Nullable String email, @Nullable Date birthday) {
+        public FamilyMember(String name, String lastName, @Nullable String phoneNumber, @Nullable String email, @Nullable String birthday) {
+            this.id = System.identityHashCode(this);
             this.name = name;
+            this.lastName = lastName;
+            this.phoneNumber = phoneNumber;
+            this.email = email;
+            this.birthday = birthday;
+        }
+
+        public FamilyMember(String id, String name, String lastName, @Nullable String phoneNumber, @Nullable String email, @Nullable String birthday) {
+            this.id = Integer.parseInt(id);
+            this.name = name;
+            this.lastName = lastName;
             this.phoneNumber = phoneNumber;
             this.email = email;
             this.birthday = birthday;
@@ -230,6 +327,46 @@ public class FamilyContent implements Serializable {
 
         public String getName() {
             return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getBirthday() {
+            return birthday;
+        }
+
+        public void setBirthday(String birthday) {
+            this.birthday = birthday;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public String getID() {
+            return String.valueOf(id);
         }
     }
 }

@@ -4,7 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -42,9 +44,12 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         if(holder.mItem.getNextAppointment() == null) {
             holder.mDateView.setText("No appointment");
             holder.mTimeView.setText("");
+            holder.mCheckBox.setVisibility(View.INVISIBLE);
         } else {
             holder.mDateView.setText(mValues.get(position).getNextAppointment().getDate());
             holder.mTimeView.setText(mValues.get(position).getNextAppointment().getTime());
+            holder.mCheckBox.setChecked(holder.mItem.getNextAppointment().getCompleted());
+            holder.mCheckBox.setVisibility(View.VISIBLE);
         }
         holder.mFamilyNameView.setText(mValues.get(position).toString());
 
@@ -56,6 +61,22 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
                     // fragment is attached to one) that an item has been selected.
                     mListener.onAppointmentListFragmentInteraction(holder.mItem);
                 }
+            }
+        });
+        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.mItem.getNextAppointment().setCompleted(holder.mCheckBox.isChecked());
+                mListener.onAppointmentListCheckBoxInteraction(holder.mItem, holder.mCheckBox);
+            }
+        });
+
+        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                mListener.onAppointmentListLongClick(holder.mItem);
+                return false;
             }
         });
     }
@@ -70,6 +91,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         public final TextView mDateView;
         public final TextView mTimeView;
         public final TextView mFamilyNameView;
+        public final CheckBox mCheckBox;
         public Family mItem;
 
         public ViewHolder(View view) {
@@ -78,6 +100,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
             mDateView = (TextView) view.findViewById(R.id.appointment_date);
             mTimeView = (TextView) view.findViewById(R.id.appointment_time);
             mFamilyNameView = (TextView) view.findViewById(R.id.appointment_family);
+            mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
         }
 
         @Override

@@ -74,7 +74,9 @@ public class FamilyDetailFragment extends Fragment {
 
         // Hide view objects if non-existent
         if (family != null) {
-            if (family.phoneNumber != null) {
+            if (family.phoneNumber.equals("") && family.emailAddress.equals("") && family.postalAddress.equals(""))
+                ((TextView)rootView.findViewById(R.id.detail_contact_title)).setText("No contact information to show");
+            if (!family.phoneNumber.equals("")) {
                 ((TextView) rootView.findViewById(R.id.detail_phone_number)).setText(family.phoneNumber);
                 ImageButton callButton = ((ImageButton) rootView.findViewById(R.id.detail_call_button));
                 callButton.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +98,7 @@ public class FamilyDetailFragment extends Fragment {
                 rootView.findViewById(R.id.detail_call_button).setVisibility(View.GONE);
                 rootView.findViewById(R.id.detail_sms_button).setVisibility(View.GONE);
             }
-            if (family.emailAddress != null) {
+            if (!family.emailAddress.equals("")) {
                 ((TextView) rootView.findViewById(R.id.detail_email)).setText(family.emailAddress);
                 ImageButton emailButton = ((ImageButton) rootView.findViewById(R.id.detail_email_button));
                 emailButton.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +113,7 @@ public class FamilyDetailFragment extends Fragment {
                 rootView.findViewById(R.id.detail_email_button).setVisibility(View.GONE);
 
             }
-            if (family.postalAddress != null) {
+            if (!family.postalAddress.equals("")) {
                 ((TextView) rootView.findViewById(R.id.detail_address)).setText(family.postalAddress);
                 ImageButton mapButton = ((ImageButton) rootView.findViewById(R.id.detail_map_button));
                 mapButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +137,7 @@ public class FamilyDetailFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             assert (family.getMemberNameArray() != null);
             recyclerView.setAdapter(new MyFamilyMemberRecyclerViewAdapter(family.getMemberList(), mListener));
+
         }
         if (family.getMemberNameArray() != null) {
             rootView.findViewById(R.id.detail_family_title).setVisibility(View.GONE);

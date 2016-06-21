@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
+import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.R;
 import coljamkop.tabtest.RecyclerViewAdapters.MyAppointmentRecyclerViewAdapter;
 
@@ -70,6 +72,8 @@ public class AppointmentViewFragment extends Fragment {
             }
         });
 
+        // Set checkbox listener
+
         // Set the adapter
         if (view.findViewById(R.id.appointmentlist) instanceof RecyclerView) {
             Context context = view.getContext();
@@ -113,9 +117,12 @@ public class AppointmentViewFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnAppointmentListFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onAppointmentListFragmentInteraction(Family family);
 
         void onListAddAppointmentButtonPress();
+
+        void onAppointmentListCheckBoxInteraction(Family family, CheckBox mCheckBox);
+
+        void onAppointmentListLongClick(Family family);
     }
 }

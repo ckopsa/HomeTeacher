@@ -11,5 +11,6 @@
         android:id="@+id/action_send_report"
         android:orderInCategory="100"
         android:title="Send Report"
+        android:onClick="onSendReportOptionSelect"
         app:showAsAction="never" />
 </menu>

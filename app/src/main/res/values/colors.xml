@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--Default Android-->
+    <!--<color name="colorBackground">#FFFFFF</color>-->
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <!--<color name="colorPrimaryLight">#303F9F</color>-->
+    <!--<color name="colorAccent">#FF4081</color>-->
+
+    <!--http://www.colourlovers.com/palette/94279/This_Desert_Life-->
+    <!--<color name="colorBackground">#DDE0CF</color>-->
+    <!--<color name="colorPrimary">#937460</color>-->
+    <!--<color name="colorPrimaryDark">#AD8B32</color>-->
+    <!--<color name="colorPrimaryLight">#C6BE9A</color>-->
+    <!--<color name="colorAccent">#8C5B7B</color>-->
+
+    <!--http://www.colourlovers.com/palette/94279/This_Desert_Life-->
+    <color name="colorBackground">#DDDDDD</color>
+    <color name="colorPrimary">#4F6270</color>
+    <color name="colorPrimaryDark">#4F6270</color>
+    <color name="colorPrimaryLight">#A0BEB8</color>
+    <color name="colorAccent">#F07241</color>
 </resources>
