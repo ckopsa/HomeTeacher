@@ -17,7 +17,7 @@ public class TableData {
         public static final String COLUMN_NAME_ENTRY_ID = "entryid";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_TIME = "time";
-        public static final String COLUMN_NAME_FAMILY = "family";
+        public static final String COLUMN_NAME_FAMILY_ID = "familyid";
         public static final String COLUMN_NAME_COMPLETED = "completed";
 
     }
@@ -41,7 +41,7 @@ public class TableData {
         // name of different columns
         public static final String COLUMN_NAME_ENTRY_ID = "entryid";
         public static final String COLUMN_NAME_FIRST_NAME = "first_name";
-        public static final String COLUMN_NAME_LAST_NAME = "last_name";
+        public static final String COLUMN_NAME_FAMILY_ID = "familyid";
         public static final String COLUMN_NAME_PHONE_NUMBER = "phone_number";
         //public static final String COLUMN_NAME_EMAIL_ADDRESS = "phone_number";
         public static final String COLUMN_NAME_BIRTHDAY = "birthday";

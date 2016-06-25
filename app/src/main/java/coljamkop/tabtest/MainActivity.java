@@ -1,12 +1,13 @@
 package coljamkop.tabtest;
 
-import android.content.ContentValues;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,13 +28,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import coljamkop.tabtest.Content.FamilyContent;
-import coljamkop.tabtest.Database.AppointmentOperations;
 import coljamkop.tabtest.Database.DBHelper;
-import coljamkop.tabtest.Database.FamilyMemberOperations;
-import coljamkop.tabtest.Database.FamilyOperations;
-import coljamkop.tabtest.Database.TableData;
 import coljamkop.tabtest.Dialogs.AppointmentOptionsDialogFragment;
 import coljamkop.tabtest.Dialogs.FamilyOptionsDialogFragment;
+import coljamkop.tabtest.Notifications.NotificationPublisher;
 import coljamkop.tabtest.Pickers.DatePickerFragment;
 import coljamkop.tabtest.Pickers.TimePickerFragment;
 import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements
         FamilyDetailFragment fragment = new FamilyDetailFragment();
         fragment.setArguments(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.main_content, fragment);
+        ft.add(android.R.id.content, fragment);
         ft.addToBackStack(null);
         ft.commit();
     }
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
                         family.setPostalAddress(postalAddress);
                         FamilyContent.addFamily(family);
                         DBHelper db = new DBHelper(getApplicationContext());
-                        db.familyOperations.putFamily(family);
+                        db.putFamily(family);
                         familyList.getAdapter().notifyDataSetChanged();
                         appointmentList.getAdapter().notifyDataSetChanged();
                     }
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
                             familyList.getAdapter().notifyDataSetChanged();
                             appointmentList.getAdapter().notifyDataSetChanged();
                             DBHelper db = new DBHelper(getApplicationContext());
-                            db.familyOperations.updateFamily(family);
+                            db.updateFamily(family);
                         }
 
                     }
@@ -177,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         DBHelper db = new DBHelper(getApplicationContext());
-                        db.familyOperations.deleteFamily(family);
+                        db.deleteFamily(family);
                         FamilyContent.removeFamily(family);
 
                         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.familylist);
@@ -240,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
         if (family.getNextAppointment().getCompleted())
             Toast.makeText(getBaseContext(), "Appointment Completed", Toast.LENGTH_SHORT).show();
         DBHelper db = new DBHelper(getApplicationContext());
-        db.appointmentOperations.updateAppointment(family.getNextAppointment());
+        db.updateAppointment(family.getNextAppointment());
     }
 
     @Override
@@ -267,6 +266,16 @@ public class MainActivity extends AppCompatActivity implements
             }
             //ft.addToBackStack(null);
             DatePickerFragment.newInstance(family).show(ft, "dialog");
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("family", family);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+            AppointmentOptionsDialogFragment.newInstance(bundle).show(ft, "dialog");
         }
     }
 
@@ -288,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             DBHelper db = new DBHelper(getApplicationContext());
-                            db.appointmentOperations.deleteAppointment(family.getNextAppointment());
+                            db.deleteAppointment(family.getNextAppointment());
                             family.deleteNextAppointment();
                             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
                             recyclerView.getAdapter().notifyDataSetChanged();
@@ -341,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements
                     bundle.getInt("minute"));
         }
         DBHelper db = new DBHelper(getApplicationContext());
-        db.appointmentOperations.putAppointment(family.getNextAppointment());
+        db.putAppointment(family.getNextAppointment());
         ((RecyclerView) findViewById(R.id.appointmentlist)).getAdapter().notifyDataSetChanged();
     }
 
@@ -397,9 +406,15 @@ public class MainActivity extends AppCompatActivity implements
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String firstName = input.getText().toString();
                         if (!firstName.equals("")) {
-                            FamilyContent.FamilyMember familyMember = new FamilyContent.FamilyMember(firstName, family.getFamilyName(), null, null, null);
+                            FamilyContent.FamilyMember familyMember =
+                                    new FamilyContent.FamilyMember(
+                                            firstName,
+                                            Integer.parseInt(family.getID()),
+                                            null,
+                                            null,
+                                            null);
                             family.addMember(familyMember);
-                            db.familyMemberOperations.putFamilyMember(familyMember);
+                            db.putFamilyMember(familyMember);
                             RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
                             if (recyclerView != null)
                                 recyclerView.getAdapter().notifyDataSetChanged();
@@ -435,43 +450,13 @@ public class MainActivity extends AppCompatActivity implements
         if (tabLayout != null) {
             tabLayout.setupWithViewPager(mViewPager);
         }
+
         if (FamilyContent.FAMILIES.isEmpty()) {
             DBHelper db = new DBHelper(this);
             if (db.doesDatabaseExist(this)) {
-                Cursor famCursor = db.familyOperations.getFamily();
-                while (famCursor.moveToNext()) {
-                    FamilyContent.Family family = new FamilyContent.Family(famCursor.getString(1));
-                    family.setID(famCursor.getString(0));
-                    family.setPhoneNumber(famCursor.getString(2));
-                    family.setEmailAddress(famCursor.getString(3));
-                    family.setPostalAddress(famCursor.getString(4));
+                for (FamilyContent.Family family:
+                     db.getFamilyList()) {
                     FamilyContent.addFamily(family);
-                    Cursor famMemCursor = db.familyMemberOperations.getFamilyMember();
-                    while (famMemCursor.moveToNext()) {
-                        if (famMemCursor.getString(2).equals(family.getFamilyName())) {
-                            FamilyContent.FamilyMember familyMember = new FamilyContent.FamilyMember (
-                                    famMemCursor.getString(0),
-                                    famMemCursor.getString(1),
-                                    famMemCursor.getString(2),
-                                    null,
-                                    famMemCursor.getString(3),
-                                    famMemCursor.getString(4)
-                            );
-                            family.addMember(familyMember);
-                        }
-                    }
-                    Cursor appointmentCursor = db.appointmentOperations.getAppointment();
-                    while(appointmentCursor.moveToNext()) {
-                        if(appointmentCursor.getString(3).equals(family.getFamilyName())) {
-                            family.addAppointment(
-                                    appointmentCursor.getString(0),
-                                    appointmentCursor.getString(1),
-                                    appointmentCursor.getString(2),
-                                    appointmentCursor.getString(3),
-                                    appointmentCursor.getInt(4)
-                            );
-                        }
-                    }
                 }
             }
         }
@@ -499,6 +484,12 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        sendNotification();
+    }
+
     public void onSendReportOptionSelect(MenuItem item) {
         String emailBody = "";
         for (FamilyContent.Family fam :
@@ -518,6 +509,29 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
+    public void sendNotification() {
+        String unappointedFamilies = "";
+        boolean isReminderableFamily = false;
+        for (FamilyContent.Family family :
+                FamilyContent.FAMILIES) {
+            if (family.getNextAppointment() == null) {
+                isReminderableFamily = true;
+                unappointedFamilies += "The " + family.getFamilyName() + " family\n";
+            }
+        }
+        if (isReminderableFamily) {
+            Log.d("Notification", " is good");
+            Intent alarmIntent = new Intent(this, NotificationPublisher.class);
+            alarmIntent.putExtra("message", unappointedFamilies);
+            alarmIntent.putExtra("title", "Reminder to contact: ");
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            //TODO: For demo set after 5 seconds.
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
+        }
+    }
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.

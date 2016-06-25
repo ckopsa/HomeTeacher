@@ -18,42 +18,9 @@ import java.util.Map;
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class FamilyContent implements Serializable {
-
-    /**
-     * An array of sample (dummy) items.
-     */
     public static final List<Family> FAMILIES = new ArrayList<Family>();
-
-    /**
-     * A map of sample (dummy) items, by ID.
-     */
     public static final Map<String, Family> FAMILY_MAP = new HashMap<String, Family>();
 
-    static {
-
-//        Family fam = new Family("Kopsa");
-//        fam.setPhoneNumber("5305205087");
-//        fam.setPostalAddress("3909 Neal Road, Paradise, CA");
-//        fam.setEmailAddress("colton.kopsa@gmail.com");
-//        fam.addMember(new FamilyMember("Colton", null, null, null));
-//        fam.addMember(new FamilyMember("Kevin", null, null, null));
-//        fam.addMember(new FamilyMember("Carson", null, null, null));
-//        addFamily(fam);
-//        fam = new Family("Gerasymenko");
-//        fam.setPhoneNumber("5555555555");
-//        fam.setPostalAddress("Ukraine");
-//        fam.setEmailAddress("maxymax@gmail.com");
-//        fam.addMember(new FamilyMember("Max", null, null, null));
-//        addFamily(fam);
-    }
-
-    public static List<Appointment> getFamilysNextAppointment() {
-        List<Appointment> temp = new ArrayList<>();
-        for (Family family : FAMILIES) {
-            temp.add(family.getNextAppointment());
-        }
-        return temp;
-    }
     public static void addFamily(Family family) {
         FAMILIES.add(family);
         FAMILY_MAP.put(family.familyName, family);
@@ -72,9 +39,6 @@ public class FamilyContent implements Serializable {
         return familyNames.toArray(new String[familyNames.size()]);
     }
 
-    /**
-     * A dummy item representing a piece of familyName.
-     */
     public static class Family implements Serializable {
         private int id;
         public String familyName;
@@ -114,7 +78,7 @@ public class FamilyContent implements Serializable {
             if (appointments == null) {
                 appointments = new ArrayDeque<>();
             }
-            appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute, familyName));
+            appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute, id));
         }
 
         public Appointment getNextAppointment() {
@@ -135,13 +99,18 @@ public class FamilyContent implements Serializable {
 
         public void setFamilyName(String familyName) {
             this.familyName = familyName;
-            for (FamilyMember member :
-                    getMemberList()) {
-                member.setLastName(familyName);
+            if (familyMembers != null) {
+                for (FamilyMember member :
+                        getMemberList()) {
+                    member.setFamilyID(id);
+                }
             }
-            for (Appointment appointment :
-                    appointments) {
-                appointment.family = familyName;
+
+            if (appointments != null) {
+                for (Appointment appointment :
+                        appointments) {
+                    appointment.familyID = id;
+                }
             }
         }
 
@@ -194,11 +163,11 @@ public class FamilyContent implements Serializable {
                 return false;
         }
 
-        public void addAppointment(String id, String date, String time, String family, int completed) {
+        public void addAppointment(String id, String date, String time, int familyID, int completed) {
             if (appointments == null) {
                 appointments = new ArrayDeque<>();
             }
-            appointments.addFirst(new Appointment(id, date, time, family, completed));
+            appointments.addFirst(new Appointment(id, date, time, familyID, completed));
         }
         public String getID() {
             return String.valueOf(id);
@@ -206,6 +175,13 @@ public class FamilyContent implements Serializable {
 
         public void setID(String id) {
             this.id = Integer.parseInt(id);
+        }
+
+        public void addAppointment(Appointment appointment) {
+            if (appointments == null) {
+                appointments = new ArrayDeque<>();
+            }
+            appointments.addFirst(appointment);
         }
     }
 
@@ -217,9 +193,9 @@ public class FamilyContent implements Serializable {
         private int hourOfDay;
         private int minute;
         private boolean completed;
-        private String family;
+        private int familyID;
 
-        public Appointment(int year, int month, int day, int hourOfDay, int minute, String family) {
+        public Appointment(int year, int month, int day, int hourOfDay, int minute, int familyID) {
             this.id = System.identityHashCode(this);
             this.year = year;
             this.month = month;
@@ -227,10 +203,10 @@ public class FamilyContent implements Serializable {
             this.hourOfDay = hourOfDay;
             this.minute = minute;
             this.completed = false;
-            this.family = family;
+            this.familyID = familyID;
         }
 
-        public Appointment(String id, String date, String time, String family, int completed) {
+        public Appointment(String id, String date, String time, int familyID, int completed) {
             this.id = Integer.parseInt(id);
             String[] dateArray = date.split("/");
             month = Integer.parseInt(dateArray[0]);
@@ -247,15 +223,8 @@ public class FamilyContent implements Serializable {
                 this.hourOfDay = Integer.parseInt(timeArray[0]);
                 this.minute = Integer.parseInt(timeArray[1]);
             }
-            this.family = family;
+            this.familyID = familyID;
             this.completed = completed == 1;
-        }
-
-        public boolean toggleCompleted() {
-            if (this.completed == false)
-                return this.completed = true;
-            else
-                return this.completed = false;
         }
 
         public String getDate() {
@@ -264,22 +233,32 @@ public class FamilyContent implements Serializable {
 
         public String getTime() {
             String time;
-            // AM vs PM
-            if (hourOfDay <= 12) {
-                time = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
-                // Ensures time doesn't look like 8:0 or 7:3
-                if (minute == 0)
-                    time += "0";
+            boolean isPM = false;
+            // hour of day logic
+            if (hourOfDay == 12) {
+                time = String.valueOf(hourOfDay) + ":";
+                isPM = true;
+            } else if (hourOfDay == 0) {
+                time = String.valueOf(hourOfDay + 12) + ":";
+            } else if (hourOfDay > 12) {
+                time = String.valueOf(hourOfDay - 12) + ":";
+                isPM = true;
+            } else {
+                time = String.valueOf(hourOfDay) + ":";
+            }
+            // minute logic
+            if (minute  < 10) {
+                time += "0" + String.valueOf(minute);
+            } else {
+                time += String.valueOf(minute);
+            }
+            // AM/PM logic
+            if (isPM) {
+                time += " PM";
+            } else {
                 time += " AM";
             }
-            else {
-                time = String.valueOf(hourOfDay - 12) + ":";
-                // keep 11:03 from looking like 11:3
-                if (minute  < 10)
-                    time += "0";
-                time += String.valueOf(minute);
-                time += " PM";
-            }
+
             return time;
         }
 
@@ -291,35 +270,35 @@ public class FamilyContent implements Serializable {
             this.completed = completed;
         }
 
-        public String getFamily() {
-            return family;
-        }
-
         public String getID() {
             return String.valueOf(id);
+        }
+
+        public int getFamilyID() {
+            return familyID;
         }
     }
     public static class FamilyMember implements Serializable {
         private int id;
         private String name;
-        private String lastName;
+        private int familyID;
         private String phoneNumber;
         private String email;
         private String birthday;
 
-        public FamilyMember(String name, String lastName, @Nullable String phoneNumber, @Nullable String email, @Nullable String birthday) {
+        public FamilyMember(String name, int familyID, @Nullable String phoneNumber, @Nullable String email, @Nullable String birthday) {
             this.id = System.identityHashCode(this);
             this.name = name;
-            this.lastName = lastName;
+            this.familyID = familyID;
             this.phoneNumber = phoneNumber;
             this.email = email;
             this.birthday = birthday;
         }
 
-        public FamilyMember(String id, String name, String lastName, @Nullable String phoneNumber, @Nullable String email, @Nullable String birthday) {
+        public FamilyMember(String id, String name, int familyID, @Nullable String phoneNumber, @Nullable String email, @Nullable String birthday) {
             this.id = Integer.parseInt(id);
             this.name = name;
-            this.lastName = lastName;
+            this.familyID = familyID;
             this.phoneNumber = phoneNumber;
             this.email = email;
             this.birthday = birthday;
@@ -357,16 +336,16 @@ public class FamilyContent implements Serializable {
             this.birthday = birthday;
         }
 
-        public void setLastName(String lastName) {
-            this.lastName = lastName;
-        }
-
-        public String getLastName() {
-            return lastName;
+        public int getFamilyID() {
+            return familyID;
         }
 
         public String getID() {
             return String.valueOf(id);
+        }
+
+        public void setFamilyID(int familyID) {
+            this.familyID = familyID;
         }
     }
 }
