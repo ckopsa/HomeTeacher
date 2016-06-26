@@ -1,10 +1,12 @@
 package coljamkop.tabtest;
 
 import android.app.AlarmManager;
+import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -24,17 +26,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Database.DBHelper;
 import coljamkop.tabtest.Dialogs.AppointmentOptionsDialogFragment;
 import coljamkop.tabtest.Dialogs.FamilyOptionsDialogFragment;
 import coljamkop.tabtest.Notifications.NotificationPublisher;
-import coljamkop.tabtest.Pickers.DatePickerFragment;
-import coljamkop.tabtest.Pickers.TimePickerFragment;
 import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
+import coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment;
 import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
 import coljamkop.tabtest.ViewFragments.FamilyViewFragment;
 
@@ -43,11 +48,10 @@ import static coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFra
 public class MainActivity extends AppCompatActivity implements
         OnFamilyListFragmentInteractionListener,
         AppointmentViewFragment.OnAppointmentListFragmentInteractionListener,
-        TimePickerFragment.OnTimePickerFragmentInteractionListener,
-        DatePickerFragment.OnDatePickerFragmentInteractionListener,
         FamilyOptionsDialogFragment.OnFamilyOptionsDialogFragmentInteractionListener,
         FamilyDetailFragment.OnFamilyDetailFragmentInteractionListener,
-        AppointmentOptionsDialogFragment.OnAppointmentOptionsDialogFragmentInteractionListener {
+        AppointmentOptionsDialogFragment.OnAppointmentOptionsDialogFragmentInteractionListener,
+        FamilyAppointmentsFragment.OnFamilyAppointmentListFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -213,25 +217,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onListAddAppointmentButtonPress() {
-        if (FamilyContent.FAMILIES.size() == 0) {
-            Toast toast = Toast.makeText(getApplicationContext(), "No families to visit.", Toast.LENGTH_SHORT);
-            toast.show();
-        } else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Pick a family")
-                    .setItems(FamilyContent.getFamilyNames(), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // The 'which' argument contains the index position
-                            // of the selected item
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-                            if (prev != null) {
-                                ft.remove(prev);
-                            }
-                            DatePickerFragment.newInstance(FamilyContent.FAMILIES.get(which)).show(ft, "dialog");
-                        }
-                    }).show();
-        }
+
     }
 
     @Override
@@ -257,25 +243,123 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onAppointmentListFragmentInteraction(FamilyContent.Family family) {
-        if (family.getNextAppointment() == null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-            if (prev != null) {
-                ft.remove(prev);
+    public void onAppointmentTimeClick(final FamilyContent.Family family) {
+        final RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.appointmentlist));
+
+        final FamilyContent.Appointment appointment = family.getNextAppointment();
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if (view.isShown()) {
+                    appointment.setHour(hourOfDay);
+                    appointment.setMinute(minute);
+                    Log.d("onTimeChanged", "time changed");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.updateAppointment(appointment);
+                }
             }
-            //ft.addToBackStack(null);
-            DatePickerFragment.newInstance(family).show(ft, "dialog");
-        } else {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("family", family);
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-            if (prev != null) {
-                ft.remove(prev);
+        };
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener,
+                appointment.getHour(),
+                appointment.getMinute(), false);
+        timePickerDialog.show();
+        }
+
+    @Override
+    public void onAppointmentDateClick(final FamilyContent.Family family) {
+        final RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.appointmentlist));
+        final FamilyContent.Appointment appointment = family.getNextAppointment();
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                if (view.isShown()) {
+                    appointment.setYear(year);
+                    appointment.setMonth(1 + monthOfYear);
+                    appointment.setDay(dayOfMonth);
+                    Log.d("onDateChanged", "date changed");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.updateAppointment(appointment);
+                }
             }
+        };
+        DatePickerDialog datePickerFragment = new DatePickerDialog(this,
+                onDateSetListener,
+                appointment.getYear(),
+                appointment.getMonth() - 1,
+                appointment.getDay());
+        datePickerFragment.show();
+    }
+
+    @Override
+    public void onRemindButtonPress(FamilyContent.Family family) {
+        onSendFamilyReminderOptionSelected(family);
+    }
+
+    @Override
+    public void onListButtonPress(FamilyContent.Family family) {
+        if (family.getNextAppointment() != null) {
+            FamilyAppointmentsFragment fragment = FamilyAppointmentsFragment.newInstance(family);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(android.R.id.content, fragment);
             ft.addToBackStack(null);
-            AppointmentOptionsDialogFragment.newInstance(bundle).show(ft, "dialog");
+            ft.commit();
+        } else {
+            Toast.makeText(this, "No appointments to view", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onAppointmentListFragmentInteraction(final FamilyContent.Family family) {
+        if (family.getNextAppointment() == null) {
+            final RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.appointmentlist));
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            final DBHelper db = new DBHelper(getApplicationContext());
+            final FamilyContent.Appointment appointment = new FamilyContent.Appointment(0,0,0,0,0, Integer.parseInt(family.getID()));
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            final int day = c.get(Calendar.DAY_OF_MONTH);
+            int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+
+            DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    if (view.isShown()) {
+                        appointment.setYear(year);
+                        appointment.setMonth(1 + monthOfYear);
+                        appointment.setDay(dayOfMonth);
+                        Log.d("onDateChanged", "date changed");
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        db.putAppointment(appointment);
+                    }
+                }
+            };
+            DatePickerDialog datePickerFragment = new DatePickerDialog(this, onDateSetListener, year, month, day);
+            datePickerFragment.show();
+
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    if (view.isShown()) {
+                        appointment.setHour(hourOfDay);
+                        appointment.setMinute(minute);
+                        Log.d("onTimeChanged", "time changed");
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        family.addAppointment(appointment);
+                        db.updateAppointment(appointment);
+                    }
+                }
+            };
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener, hourOfDay, minute, false);
+            timePickerDialog.show();
+
         }
     }
 
@@ -309,49 +393,27 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onSendFamilyReminderOptionSelected(final FamilyContent.Family family) {
-        String message = "Hey " + family.getFamilyName()
-                + "s! Just reminding you we have an appointment for "
-                + family.getNextAppointment().getDate()
-                + " at " + family.getNextAppointment().getTime() + ". See you then!";
-        final EditText input = new EditText(this);
-        input.setText(message);
-        new AlertDialog.Builder(this)
-                .setTitle("Send the " + family.getFamilyName() + "s a reminder:")
-                .setIcon(android.R.drawable.ic_popup_reminder)
-                .setView(input)
-                .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        SmsManager smsPhone = SmsManager.getDefault();
-                        smsPhone.sendTextMessage(family.phoneNumber, null, input.getText().toString(), null, null);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
-    }
-
-    @Override
-    public void onDatePickerSet(Bundle bundle) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
-        if (prev != null) {
-            ft.remove(prev);
+        if (family.getNextAppointment() != null) {
+            String message = "Hey " + family.getFamilyName()
+                    + "s! Just reminding you we have an appointment for "
+                    + family.getNextAppointment().getDate()
+                    + " at " + family.getNextAppointment().getTime() + ". See you then!";
+            final EditText input = new EditText(this);
+            input.setText(message);
+            new AlertDialog.Builder(this)
+                    .setTitle("Send the " + family.getFamilyName() + "s a reminder:")
+                    .setView(input)
+                    .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            SmsManager smsPhone = SmsManager.getDefault();
+                            smsPhone.sendTextMessage(family.phoneNumber, null, input.getText().toString(), null, null);
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+        } else {
+            onSendFamilySMSOptionSelected(family);
         }
-        TimePickerFragment.newInstance(bundle).show(ft, "dialog");
-    }
-
-    @Override
-    public void onTimePickerSet(Bundle bundle) {
-        FamilyContent.Family family = (FamilyContent.Family) bundle.getSerializable("family");
-        if (family != null) {
-            family.addAppointment(bundle.getInt("year"),
-                    bundle.getInt("month"),
-                    bundle.getInt("day"),
-                    bundle.getInt("hourOfDay"),
-                    bundle.getInt("minute"));
-        }
-        DBHelper db = new DBHelper(getApplicationContext());
-        db.putAppointment(family.getNextAppointment());
-        ((RecyclerView) findViewById(R.id.appointmentlist)).getAdapter().notifyDataSetChanged();
     }
 
     /*
@@ -423,6 +485,90 @@ public class MainActivity extends AppCompatActivity implements
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
+    }
+
+    /*
+     * Family Appointment List
+     */
+
+    @Override
+    public void onListFragmentInteraction(FamilyContent.Appointment item) {
+
+    }
+
+    @Override
+    public void onFamilyAppointmentListCheckBoxInteraction(FamilyContent.Appointment appointment, CheckBox checkBox) {
+        if (appointment.getCompleted())
+            Toast.makeText(getBaseContext(), "Appointment Completed", Toast.LENGTH_SHORT).show();
+        DBHelper db = new DBHelper(getApplicationContext());
+        db.updateAppointment(appointment);
+    }
+
+    @Override
+    public void onTrashButtonPress(final FamilyContent.Appointment appointment) {
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_appointment_list);
+        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Appointment")
+                .setMessage("Do you really want to delete this appointment?")
+                .setIcon(android.R.drawable.ic_delete)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        FamilyContent.getFamily(appointment.getFamilyID()).deleteAppointment(appointment);
+                        DBHelper db = new DBHelper(getApplicationContext());
+                        db.deleteAppointment(appointment);
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        recyclerViewMain.getAdapter().notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    @Override
+    public void onFamilyAppointmentDateClick(final FamilyContent.Appointment appointment) {
+        final RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.family_appointment_list));
+        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                if (view.isShown()) {
+                    appointment.setYear(year);
+                    appointment.setMonth(1 + monthOfYear);
+                    appointment.setDay(dayOfMonth);
+                    Log.d("onDateChanged", "date changed");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.updateAppointment(appointment);
+                }
+            }
+        };
+        DatePickerDialog datePickerFragment = new DatePickerDialog(this,
+                onDateSetListener,
+                appointment.getYear(),
+                appointment.getMonth() - 1,
+                appointment.getDay());
+        datePickerFragment.show();
+    }
+
+    @Override
+    public void onFamilyAppointmentTimeClick(final FamilyContent.Appointment appointment) {
+        final RecyclerView recyclerView = ((RecyclerView)findViewById(R.id.family_appointment_list));
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if (view.isShown()) {
+                    appointment.setHour(hourOfDay);
+                    appointment.setMinute(minute);
+                    Log.d("onTimeChanged", "time changed");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.updateAppointment(appointment);
+                }
+            }
+        };
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener,
+                appointment.getHour(),
+                appointment.getMinute(), false);
+        timePickerDialog.show();
     }
 
     /*
@@ -532,6 +678,8 @@ public class MainActivity extends AppCompatActivity implements
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
         }
     }
+
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.

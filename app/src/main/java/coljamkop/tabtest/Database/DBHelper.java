@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,8 +96,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(AppointmentInfo.COLUMN_NAME_TIME, appointment.getTime());
         values.put(AppointmentInfo.COLUMN_NAME_FAMILY_ID, appointment.getFamilyID());
         values.put(AppointmentInfo.COLUMN_NAME_COMPLETED, appointment.getCompleted());
-
         getWritableDatabase().insert(AppointmentInfo.TABLE_NAME, null, values);
+        Log.d("Database", "appointment added");
     }
     public boolean updateAppointment(FamilyContent.Appointment appointment) {
         ContentValues values = new ContentValues();
@@ -105,7 +106,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(AppointmentInfo.COLUMN_NAME_TIME, appointment.getTime());
         values.put(AppointmentInfo.COLUMN_NAME_FAMILY_ID, appointment.getFamilyID());
         values.put(AppointmentInfo.COLUMN_NAME_COMPLETED, appointment.getCompleted());
-
+        Log.d("Database", "appointment updated");
         return getWritableDatabase().update(AppointmentInfo.TABLE_NAME, values, AppointmentInfo.COLUMN_NAME_ENTRY_ID + "=" + appointment.getID(), null) > 0;
     }
 
@@ -116,6 +117,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String[] selectionArgs = { appointment.getID() };
         // Issue SQL statement.
         getWritableDatabase().delete(AppointmentInfo.TABLE_NAME, selection, selectionArgs);
+        Log.d("Database", "appointment deleted");
     }
 
     public Cursor getAppointment() {
@@ -313,6 +315,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(FamilyInfo.COLUMN_NAME_EMAIL_ADDRESS, family.getEmailAddress());
         values.put(FamilyInfo.COLUMN_NAME_POSTAL_ADDRESS, family.getPostalAddress());
         // TODO update appointments and family members
+        Log.d("Database", family.getFamilyName() + " family updated");
         return getWritableDatabase().update(FamilyInfo.TABLE_NAME, values, FamilyInfo.COLUMN_NAME_ENTRY_ID + "=" + family.getID(), null) > 0;
     }
 
@@ -337,6 +340,7 @@ public class DBHelper extends SQLiteOpenHelper {
             selectionArgs = new String[]{appointment.getID()};
             db.delete(FamilyMemberInfo.TABLE_NAME, selection, selectionArgs);
         }
+        Log.d("Database", family.getFamilyName() + " family deleted");
     }
 
     public List<FamilyContent.Family> getFamilyList() {
@@ -386,6 +390,7 @@ public class DBHelper extends SQLiteOpenHelper {
             // add family
             families.add(family);
         }
+        Log.d("Database", "Families gotten");
         return families;
     }
 
@@ -414,6 +419,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 null,                                     // don't filter by row groups
                 sortOrder                                 // The sort order
         );
+        Log.d("Database"," family gotten");
 
         return c;
     }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,27 +43,42 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         if(holder.mItem.getNextAppointment() == null) {
-            holder.mDateView.setText("No appointment");
-            holder.mTimeView.setText("");
+            holder.mNoAppointment.setVisibility(View.VISIBLE);
             holder.mCheckBox.setVisibility(View.INVISIBLE);
+            holder.mTimeView.setVisibility(View.INVISIBLE);
+            holder.mDateView.setVisibility(View.INVISIBLE);
         } else {
             holder.mDateView.setText(mValues.get(position).getNextAppointment().getDate());
             holder.mTimeView.setText(mValues.get(position).getNextAppointment().getTime());
             holder.mCheckBox.setChecked(holder.mItem.getNextAppointment().getCompleted());
+            holder.mNoAppointment.setVisibility(View.INVISIBLE);
             holder.mCheckBox.setVisibility(View.VISIBLE);
+            holder.mTimeView.setVisibility(View.VISIBLE);
+            holder.mDateView.setVisibility(View.VISIBLE);
         }
         holder.mFamilyNameView.setText(mValues.get(position).toString());
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.mFamilyNameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onAppointmentListFragmentInteraction(holder.mItem);
-                } else {
-                    mListener.onAppointmentListLongClick(holder.mItem);
-                }
+                mListener.onAppointmentListLongClick(holder.mItem);
+            }
+        });
+        holder.mNoAppointment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onAppointmentListFragmentInteraction(holder.mItem);
+            }
+        });
+        holder.mTimeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onAppointmentTimeClick(holder.mItem);
+            }
+        });
+        holder.mDateView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onAppointmentDateClick(holder.mItem);
             }
         });
         holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +88,18 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
                 mListener.onAppointmentListCheckBoxInteraction(holder.mItem, holder.mCheckBox);
             }
         });
-
+        holder.mReminderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onRemindButtonPress(holder.mItem);
+            }
+        });
+        holder.mListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onListButtonPress(holder.mItem);
+            }
+        });
         holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
 
             @Override
@@ -94,6 +121,10 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         public final TextView mTimeView;
         public final TextView mFamilyNameView;
         public final CheckBox mCheckBox;
+        public final TextView mNoAppointment;
+        public final ImageButton mListButton;
+        public final ImageButton mReminderButton;
+
         public Family mItem;
 
         public ViewHolder(View view) {
@@ -101,8 +132,11 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
             mView = view;
             mDateView = (TextView) view.findViewById(R.id.appointment_date);
             mTimeView = (TextView) view.findViewById(R.id.appointment_time);
+            mNoAppointment = (TextView) view.findViewById(R.id.appointment_none);
             mFamilyNameView = (TextView) view.findViewById(R.id.appointment_family);
-            mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
+            mCheckBox = (CheckBox) view.findViewById(R.id.checkbox);
+            mListButton = (ImageButton) view.findViewById(R.id.appointment_list_button);
+            mReminderButton = (ImageButton) view.findViewById(R.id.appointment_reminder_button);
         }
 
         @Override

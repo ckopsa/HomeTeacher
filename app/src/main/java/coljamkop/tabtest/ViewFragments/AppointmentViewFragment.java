@@ -124,5 +124,13 @@ public class AppointmentViewFragment extends Fragment {
         void onAppointmentListCheckBoxInteraction(Family family, CheckBox mCheckBox);
 
         void onAppointmentListLongClick(Family family);
+
+        void onAppointmentTimeClick(Family family);
+
+        void onAppointmentDateClick(Family family);
+
+        void onRemindButtonPress(Family family);
+
+        void onListButtonPress(Family family);
     }
 }

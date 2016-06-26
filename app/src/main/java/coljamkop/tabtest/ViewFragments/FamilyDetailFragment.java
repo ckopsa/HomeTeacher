@@ -1,7 +1,9 @@
 package coljamkop.tabtest.ViewFragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -9,16 +11,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import coljamkop.tabtest.Content.FamilyContent;
+import coljamkop.tabtest.Database.DBHelper;
 import coljamkop.tabtest.R;
 import coljamkop.tabtest.RecyclerViewAdapters.MyFamilyMemberRecyclerViewAdapter;
 import coljamkop.tabtest.RecyclerViewAdapters.MyFamilyRecyclerViewAdapter;
@@ -57,7 +62,7 @@ public class FamilyDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_family_detail, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_family_detail, container, false);
 
         CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.detail_toolbar_layout);
         if (appBarLayout != null) {
@@ -69,65 +74,30 @@ public class FamilyDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mListener.addFamilyMember(family);
+                if (family.getMemberNameArray() != null) {
+                    rootView.findViewById(R.id.detail_family_title).setVisibility(View.VISIBLE);
+                }
             }
         });
 
         // Hide view objects if non-existent
         if (family != null) {
-            if (family.phoneNumber.equals("") && family.emailAddress.equals("") && family.postalAddress.equals(""))
-                ((TextView)rootView.findViewById(R.id.detail_contact_title)).setText("No contact information to show");
-            if (!family.phoneNumber.equals("")) {
-                ((TextView) rootView.findViewById(R.id.detail_phone_number)).setText(family.phoneNumber);
-                ImageButton callButton = ((ImageButton) rootView.findViewById(R.id.detail_call_button));
-                callButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.onCallButtonPress(family.getPhoneNumber());
-                    }
-                });
-                ImageButton smsButton = ((ImageButton) rootView.findViewById(R.id.detail_sms_button));
-                smsButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.onSMSButtonPress(family.getPhoneNumber());
-                    }
-                });
-            }
-            else /*if (family.phoneNumber == "")*/ {
-                rootView.findViewById(R.id.detail_phone_number).setVisibility(View.GONE);
-                rootView.findViewById(R.id.detail_call_button).setVisibility(View.GONE);
-                rootView.findViewById(R.id.detail_sms_button).setVisibility(View.GONE);
-            }
-            if (!family.emailAddress.equals("")) {
-                ((TextView) rootView.findViewById(R.id.detail_email)).setText(family.emailAddress);
-                ImageButton emailButton = ((ImageButton) rootView.findViewById(R.id.detail_email_button));
-                emailButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.onEmailButtonPress(family.getEmailAddress());
-                    }
-                });
-            }
-            else {
-                rootView.findViewById(R.id.detail_email).setVisibility(View.GONE);
-                rootView.findViewById(R.id.detail_email_button).setVisibility(View.GONE);
+            phoneNumberSetup(rootView);
+            emailAddressSetup(rootView);
+            postalAddressSetup(rootView);
 
+            if (family.emailAddress.equals("")) {
+                ((TextView)rootView.findViewById(R.id.detail_email)).setText("Add email address");
+                rootView.findViewById(R.id.detail_email_button).setVisibility(View.INVISIBLE);
+            } if (family.phoneNumber.equals("")) {
+                TextView phoneNumber = ((TextView) rootView.findViewById(R.id.detail_phone_number));
+                phoneNumber.setText("Add phone number");
+                rootView.findViewById(R.id.detail_call_button).setVisibility(View.INVISIBLE);
+                rootView.findViewById(R.id.detail_sms_button).setVisibility(View.INVISIBLE);
+            } if (family.postalAddress.equals("")) {
+                ((TextView)rootView.findViewById(R.id.detail_address)).setText("Add postal address");
+                rootView.findViewById(R.id.detail_map_button).setVisibility(View.INVISIBLE);
             }
-            if (!family.postalAddress.equals("")) {
-                ((TextView) rootView.findViewById(R.id.detail_address)).setText(family.postalAddress);
-                ImageButton mapButton = ((ImageButton) rootView.findViewById(R.id.detail_map_button));
-                mapButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListener.onMapButtonPress(family.getPostalAddress());
-                    }
-                });
-            }
-            else {
-                rootView.findViewById(R.id.detail_address).setVisibility(View.GONE);
-                rootView.findViewById(R.id.detail_map_button).setVisibility(View.GONE);
-            }
-
         }
 
         // Set the adapter
@@ -139,11 +109,187 @@ public class FamilyDetailFragment extends Fragment {
             recyclerView.setAdapter(new MyFamilyMemberRecyclerViewAdapter(family.getMemberList(), mListener));
 
         }
-        if (family.getMemberNameArray() != null) {
-            rootView.findViewById(R.id.detail_family_title).setVisibility(View.GONE);
-        }
-
         return rootView;
+    }
+
+    private void phoneNumberSetup(final View rootView) {
+        final TextView phoneNumber = ((TextView) rootView.findViewById(R.id.detail_phone_number));
+        phoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title;
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_CLASS_PHONE);
+                if (!family.getPhoneNumber().equals("")) {
+                    input.setText(phoneNumber.getText().toString());
+                    title = "Edit phone number:";
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(title)
+                            .setIcon(android.R.drawable.ic_menu_edit)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String text = input.getText().toString();
+                                    family.setPhoneNumber(text);
+                                    phoneNumber.setText(text);
+                                    DBHelper db = new DBHelper(getContext());
+                                    db.updateFamily(family);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                } else {
+                    input.setHint("Phone Number");
+                    title = "Add a phone number:";
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(title)
+                            .setIcon(android.R.drawable.ic_input_add)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String text = input.getText().toString();
+                                    family.setPhoneNumber(text);
+                                    phoneNumber.setText(text);
+                                    rootView.findViewById(R.id.detail_call_button).setVisibility(View.VISIBLE);
+                                    rootView.findViewById(R.id.detail_sms_button).setVisibility(View.VISIBLE);
+                                    DBHelper db = new DBHelper(getContext());
+                                    db.updateFamily(family);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                }
+            }
+        });
+        ImageButton callButton = ((ImageButton) rootView.findViewById(R.id.detail_call_button));
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onCallButtonPress(family.getPhoneNumber());
+            }
+        });
+        ImageButton smsButton = ((ImageButton) rootView.findViewById(R.id.detail_sms_button));
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onSMSButtonPress(family.getPhoneNumber());
+            }
+        });
+    }
+
+    private void emailAddressSetup(final View rootView) {
+        final TextView email = ((TextView) rootView.findViewById(R.id.detail_email));
+        email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title;
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                if (!family.getEmailAddress().equals("")) {
+                    input.setText(email.getText().toString());
+                    title = "Edit email address:";
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(title)
+                            .setIcon(android.R.drawable.ic_menu_edit)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String text = input.getText().toString();
+                                    family.setEmailAddress(text);
+                                    email.setText(text);
+                                    DBHelper db = new DBHelper(getContext());
+                                    db.updateFamily(family);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                } else {
+                    input.setHint("Email Address");
+                    title = "Add an email address:";
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(title)
+                            .setIcon(android.R.drawable.ic_input_add)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String text = input.getText().toString();
+                                    family.setEmailAddress(text);
+                                    email.setText(text);
+                                    rootView.findViewById(R.id.detail_email_button).setVisibility(View.VISIBLE);
+                                    DBHelper db = new DBHelper(getContext());
+                                    db.updateFamily(family);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                }
+            }
+        });
+        ImageButton emailButton = ((ImageButton) rootView.findViewById(R.id.detail_email_button));
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onEmailButtonPress(family.getEmailAddress());
+            }
+        });
+
+    }
+
+    private void postalAddressSetup(final View rootView) {
+        final TextView address = ((TextView) rootView.findViewById(R.id.detail_address));
+        address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title;
+                final EditText input = new EditText(getContext());
+                input.setInputType(InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS);
+                if (!family.getPostalAddress().equals("")) {
+                    input.setText(address.getText().toString());
+                    title = "Edit postal address:";
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(title)
+                            .setIcon(android.R.drawable.ic_menu_edit)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String text = input.getText().toString();
+                                    family.setPostalAddress(text);
+                                    address.setText(text);
+                                    DBHelper db = new DBHelper(getContext());
+                                    db.updateFamily(family);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                } else {
+                    input.setHint("Postal Address");
+                    title = "Add a postal address:";
+                    new AlertDialog.Builder(getContext())
+                            .setTitle(title)
+                            .setIcon(android.R.drawable.ic_input_add)
+                            .setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String text = input.getText().toString();
+                                    family.setPostalAddress(text);
+                                    address.setText(text);
+                                    rootView.findViewById(R.id.detail_map_button).setVisibility(View.VISIBLE);
+                                    DBHelper db = new DBHelper(getContext());
+                                    db.updateFamily(family);
+                                }
+                            })
+                            .setNegativeButton(android.R.string.no, null)
+                            .show();
+                }
+            }
+        });
+        ImageButton emailButton = ((ImageButton) rootView.findViewById(R.id.detail_map_button));
+        emailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onMapButtonPress(family.getPostalAddress());
+            }
+        });
     }
 
     @Override

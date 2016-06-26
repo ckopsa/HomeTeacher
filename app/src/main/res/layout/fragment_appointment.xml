@@ -1,59 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="15dp"
-    android:paddingTop="15dp"
+    android:paddingTop="2dp"
     android:orientation="horizontal">
-
-    <TableRow
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="125dp"
+        card_view:cardCornerRadius="4dp">
 
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/checkBox" />
-
-        <TextView
-            android:id="@+id/appointment_family"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Family"
-            android:textStyle="bold"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:layout_column="2" />
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/appointment_date"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Date"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:layout_column="2" />
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/appointment_time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="Time"
-            android:textAppearance="?attr/textAppearanceListItem"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginRight="@dimen/text_margin"
-            android:layout_marginStart="23dp"
-            android:layout_column="3" />
-    </TableRow>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/checkbox"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="10dp" />
 
-</TableLayout>
+            <TextView
+                android:id="@+id/appointment_family"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Family"
+                android:textStyle="bold"
+                android:textColor="@color/colorBackground"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:layout_marginLeft="@dimen/text_margin"
+                android:layout_marginRight="@dimen/text_margin"
+                android:textAlignment="center"
+                android:textIsSelectable="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_list"
+                android:id="@+id/appointment_list_button"
+                android:background="@null"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_alignTop="@+id/appointment_reminder_button"
+                android:layout_toEndOf="@id/checkbox" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@android:drawable/ic_popup_reminder"
+                android:id="@+id/appointment_reminder_button"
+                android:background="@null"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_alignParentBottom="true"
+                android:layout_toEndOf="@+id/appointment_list_button" />
+
+            <TextView
+                android:id="@+id/appointment_date"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBackground"
+                android:text="Date"
+                android:padding="10dp"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:layout_marginLeft="@dimen/text_margin"
+                android:layout_marginRight="@dimen/text_margin"
+                android:clickable="true"
+                android:gravity="center"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true" />
+
+            <TextView
+                android:id="@+id/appointment_time"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBackground"
+                android:text="Time"
+                android:padding="10dp"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:clickable="true"
+                android:layout_marginLeft="@dimen/text_margin"
+                android:layout_marginRight="@dimen/text_margin"
+                android:gravity="center"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:id="@+id/appointment_none"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBackground"
+                android:text="No Appointment"
+                android:padding="10dp"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:clickable="true"
+                android:layout_marginLeft="@dimen/text_margin"
+                android:layout_marginRight="@dimen/text_margin"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+        </android.support.v7.widget.CardView>
+</LinearLayout>

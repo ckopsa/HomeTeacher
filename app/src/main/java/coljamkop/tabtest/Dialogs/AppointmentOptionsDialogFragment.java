@@ -29,7 +29,7 @@ public class AppointmentOptionsDialogFragment extends DialogFragment {
         final FamilyContent.Family family = (FamilyContent.Family) getArguments().getSerializable("family");
 
         builder.setTitle("Choose an option:");
-        String[] options = {"Edit Appointment", "Delete Appointment", "Remind Family"};
+        String[] options = {"View Appointments", "Delete Appointment", "Remind Family"};
         builder.setItems(options, new DialogInterface.OnClickListener() {
 
             @Override

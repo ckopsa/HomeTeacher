@@ -1,6 +1,5 @@
 package coljamkop.tabtest.Content;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
@@ -23,7 +22,7 @@ public class FamilyContent implements Serializable {
 
     public static void addFamily(Family family) {
         FAMILIES.add(family);
-        FAMILY_MAP.put(family.familyName, family);
+        FAMILY_MAP.put(String.valueOf(family.id), family);
     }
 
     public static void removeFamily(Family family) {
@@ -39,6 +38,10 @@ public class FamilyContent implements Serializable {
         return familyNames.toArray(new String[familyNames.size()]);
     }
 
+    public static Family getFamily(int familyID) {
+        return FAMILY_MAP.get(String.valueOf(familyID));
+    }
+
     public static class Family implements Serializable {
         private int id;
         public String familyName;
@@ -47,6 +50,7 @@ public class FamilyContent implements Serializable {
         public String postalAddress;
         public Deque<Appointment> appointments;
         public List<FamilyMember> familyMembers;
+        private List<Appointment> appointmentList;
 
         public Family(String familyName) {
             this.id = System.identityHashCode(this);
@@ -183,6 +187,19 @@ public class FamilyContent implements Serializable {
             }
             appointments.addFirst(appointment);
         }
+
+        public List<Appointment> getAppointmentList() {
+            ArrayList<Appointment> appointmentList = new ArrayList<>();
+            for (Appointment appointment :
+                    appointments) {
+                appointmentList.add(appointment);
+            }
+            return appointmentList;
+        }
+
+        public void deleteAppointment(Appointment appointment) {
+            appointments.remove(appointment);
+        }
     }
 
     public static class Appointment implements Serializable {
@@ -276,6 +293,50 @@ public class FamilyContent implements Serializable {
 
         public int getFamilyID() {
             return familyID;
+        }
+
+        public void setDay(int day) {
+            this.day = day;
+        }
+
+        public void setMonth(int month) {
+            this.month = month;
+        }
+
+        public void setYear(int year) {
+            this.year = year;
+        }
+
+        public void setMinute(int minute) {
+            this.minute = minute;
+        }
+
+        public void setHour(int hour) {
+            this.hourOfDay = hour;
+        }
+
+        public void setId(String id) {
+            this.id = Integer.parseInt(id);
+        }
+
+        public int getMinute() {
+            return minute;
+        }
+
+        public int getHour() {
+            return hourOfDay;
+        }
+
+        public int getYear() {
+            return year;
+        }
+
+        public int getMonth() {
+            return month;
+        }
+
+        public int getDay() {
+            return day;
         }
     }
     public static class FamilyMember implements Serializable {
