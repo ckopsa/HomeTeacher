@@ -2,9 +2,12 @@ package coljamkop.tabtest.ViewFragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,10 +60,23 @@ public class FamilyAppointmentsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_family_appointment_list, container, false);
 
+        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.family_appointment_toolbar_layout);
+        if (appBarLayout != null) {
+            appBarLayout.setTitle(family.getFamilyName() + " Family");
+        }
+
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.family_appointment_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onFamilyAppointmentAddAppointment(family);
+            }
+        });
+
         // Set the adapter
-        if (view instanceof RecyclerView) {
+        if (view.findViewById(R.id.family_appointment_list) instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.family_appointment_list);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             recyclerView.setAdapter(new MyFamilyAppointmentRecyclerViewAdapter(family.getAppointmentList(), mListener));
         }
@@ -106,5 +122,7 @@ public class FamilyAppointmentsFragment extends Fragment {
         void onFamilyAppointmentDateClick(FamilyContent.Appointment appointment);
 
         void onFamilyAppointmentTimeClick(FamilyContent.Appointment appointment);
+
+        void onFamilyAppointmentAddAppointment(FamilyContent.Family family);
     }
 }

@@ -37,47 +37,49 @@ public class MyFamilyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = mValues.get(position);
-        holder.mDateView.setText(holder.mItem.getDate());
-        holder.mTimeView.setText(holder.mItem.getTime());
-        holder.mCheckBox.setChecked(holder.mItem.getCompleted());
-        holder.mTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onFamilyAppointmentTimeClick(holder.mItem);
-            }
-        });
-        holder.mDateView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onFamilyAppointmentDateClick(holder.mItem);
-            }
-        });
-        holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.mItem.setCompleted(holder.mCheckBox.isChecked());
-                mListener.onFamilyAppointmentListCheckBoxInteraction(holder.mItem, holder.mCheckBox);
-            }
-        });
-        holder.mTrashButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onTrashButtonPress(holder.mItem);
-            }
-        });
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+        if (holder.mItem != null) {
+            holder.mDateView.setText(holder.mItem.getDate());
+            holder.mTimeView.setText(holder.mItem.getTime());
+            holder.mCheckBox.setChecked(holder.mItem.getCompleted());
+            holder.mTimeView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onFamilyAppointmentTimeClick(holder.mItem);
                 }
-            }
-        });
+            });
+            holder.mDateView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onFamilyAppointmentDateClick(holder.mItem);
+                }
+            });
+            holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.mItem.setCompleted(holder.mCheckBox.isChecked());
+                    mListener.onFamilyAppointmentListCheckBoxInteraction(holder.mItem, holder.mCheckBox);
+                }
+            });
+            holder.mTrashButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onTrashButtonPress(holder.mItem);
+                }
+            });
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != mListener) {
+                        // Notify the active callbacks interface (the activity, if the
+                        // fragment is attached to one) that an item has been selected.
+                        mListener.onListFragmentInteraction(holder.mItem);
+                    }
+                }
+            });
+        }
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +49,8 @@ public class FamilyContent implements Serializable {
         public String phoneNumber;
         public String emailAddress;
         public String postalAddress;
-        public Deque<Appointment> appointments;
+        public List<Appointment> appointments;
         public List<FamilyMember> familyMembers;
-        private List<Appointment> appointmentList;
 
         public Family(String familyName) {
             this.id = System.identityHashCode(this);
@@ -80,17 +80,30 @@ public class FamilyContent implements Serializable {
          */
         public void addAppointment(int year, int month, int day, int hourOfDay, int minute) {
             if (appointments == null) {
-                appointments = new ArrayDeque<>();
+                appointments = new ArrayList<>();
             }
-            appointments.addFirst(new Appointment(year, month, day, hourOfDay, minute, id));
+            appointments.add(new Appointment(year, month, day, hourOfDay, minute, id));
         }
 
         public Appointment getNextAppointment() {
-            if (appointments == null || appointments.isEmpty()) {
-                return null;
-            } else {
-                return appointments.getFirst();
+            if (appointments != null) {
+                for (Appointment appointment :
+                        appointments) {
+                    if (isGoodAppointment(appointment))
+                        return appointment;
+                }
             }
+                return null;
+        }
+
+        private boolean isGoodAppointment(Appointment appointment) {
+            Calendar calendar = Calendar.getInstance();
+            if (calendar.get(Calendar.MONTH) + 1 <= appointment.getMonth() &&
+                    calendar.get(Calendar.YEAR) <= appointment.getYear() &&
+                    appointment.getCompleted() == false)
+                return true;
+            else
+                return false;
         }
 
         /*
@@ -160,19 +173,13 @@ public class FamilyContent implements Serializable {
 
         public boolean deleteNextAppointment() {
             if(getNextAppointment() != null) {
-                appointments.pop();
+                deleteAppointment(getNextAppointment());
                 return true;
             }
             else
                 return false;
         }
 
-        public void addAppointment(String id, String date, String time, int familyID, int completed) {
-            if (appointments == null) {
-                appointments = new ArrayDeque<>();
-            }
-            appointments.addFirst(new Appointment(id, date, time, familyID, completed));
-        }
         public String getID() {
             return String.valueOf(id);
         }
@@ -183,22 +190,31 @@ public class FamilyContent implements Serializable {
 
         public void addAppointment(Appointment appointment) {
             if (appointments == null) {
-                appointments = new ArrayDeque<>();
+                appointments = new ArrayList<>();
             }
-            appointments.addFirst(appointment);
+            appointments.add(appointment);
         }
 
         public List<Appointment> getAppointmentList() {
-            ArrayList<Appointment> appointmentList = new ArrayList<>();
-            for (Appointment appointment :
-                    appointments) {
-                appointmentList.add(appointment);
+            if (appointments != null) {
+                    return appointments;
             }
-            return appointmentList;
+            return null;
         }
 
         public void deleteAppointment(Appointment appointment) {
             appointments.remove(appointment);
+        }
+
+        public Appointment getCurrentMonthAppointment() {
+            Calendar calendar = Calendar.getInstance();
+            for (Appointment appointment :
+                    appointments) {
+                if (calendar.get(Calendar.MONTH) + 1 <= appointment.getMonth() &&
+                        calendar.get(Calendar.YEAR) <= appointment.getYear())
+                    return appointment;
+            }
+            return null;
         }
     }
 

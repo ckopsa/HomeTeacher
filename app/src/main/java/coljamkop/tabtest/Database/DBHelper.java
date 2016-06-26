@@ -327,19 +327,13 @@ public class DBHelper extends SQLiteOpenHelper {
         // Issue SQL statement.
         SQLiteDatabase db = getWritableDatabase();
         db.delete(FamilyInfo.TABLE_NAME, selection, selectionArgs);
-        selection = FamilyMemberInfo.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        for (FamilyContent.FamilyMember famMem :
-                family.getMemberList()) {
-            selectionArgs = new String[]{famMem.getID()};
-            db.delete(FamilyMemberInfo.TABLE_NAME, selection, selectionArgs);
-        }
-        selection = AppointmentInfo.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        for (FamilyContent.Appointment appointment = family.getNextAppointment();
-             appointment != null;
-             appointment = family.getNextAppointment()) {
-            selectionArgs = new String[]{appointment.getID()};
-            db.delete(FamilyMemberInfo.TABLE_NAME, selection, selectionArgs);
-        }
+        selection = FamilyMemberInfo.COLUMN_NAME_FAMILY_ID + " LIKE ?";
+        selectionArgs = new String[]{family.getID()};
+        db.delete(FamilyMemberInfo.TABLE_NAME, selection, selectionArgs);
+
+        selection = AppointmentInfo.COLUMN_NAME_FAMILY_ID + " LIKE ?";
+        selectionArgs = new String[]{family.getID()};
+        db.delete(AppointmentInfo.TABLE_NAME, selection, selectionArgs);
         Log.d("Database", family.getFamilyName() + " family deleted");
     }
 

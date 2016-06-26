@@ -49,15 +49,6 @@ public class MyFamilyRecyclerViewAdapter extends RecyclerView.Adapter<MyFamilyRe
                 }
             }
         });
-
-        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                mListener.onFamilyListLongClick(holder.mItem);
-                return false;
-            }
-        });
     }
 
     @Override

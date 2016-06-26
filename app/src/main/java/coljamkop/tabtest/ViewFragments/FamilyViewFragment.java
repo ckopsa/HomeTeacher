@@ -115,6 +115,5 @@ public class FamilyViewFragment extends Fragment {
     public interface OnFamilyListFragmentInteractionListener {
         void onFamilyListFragmentInteraction(Family item);
         void onFamilyListAddFamilyButtonPress();
-        void onFamilyListLongClick(Family family);
     }
 }

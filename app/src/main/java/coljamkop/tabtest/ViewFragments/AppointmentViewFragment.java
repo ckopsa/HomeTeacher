@@ -62,18 +62,6 @@ public class AppointmentViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_appointment_list, container, false);
-
-        // Set the button listener
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.appointmentfab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mListener.onListAddAppointmentButtonPress();
-            }
-        });
-
-        // Set checkbox listener
-
         // Set the adapter
         if (view.findViewById(R.id.appointmentlist) instanceof RecyclerView) {
             Context context = view.getContext();
@@ -119,11 +107,7 @@ public class AppointmentViewFragment extends Fragment {
     public interface OnAppointmentListFragmentInteractionListener {
         void onAppointmentListFragmentInteraction(Family family);
 
-        void onListAddAppointmentButtonPress();
-
-        void onAppointmentListCheckBoxInteraction(Family family, CheckBox mCheckBox);
-
-        void onAppointmentListLongClick(Family family);
+        void onAppointmentListCheckBoxInteraction(Appointment appointment, CheckBox mCheckBox);
 
         void onAppointmentTimeClick(Family family);
 

@@ -23,13 +23,23 @@
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+            <ImageButton
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@android:drawable/ic_menu_delete"
+                android:id="@+id/detail_trash_button"
+                android:background="@null"
+                android:layout_gravity="end|top"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:baselineAlignBottom="false" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

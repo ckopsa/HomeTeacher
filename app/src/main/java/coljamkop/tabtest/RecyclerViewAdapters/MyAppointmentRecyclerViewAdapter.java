@@ -42,7 +42,8 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        if(holder.mItem.getNextAppointment() == null) {
+        final Appointment nextAppointment = holder.mItem.getNextAppointment();
+        if(nextAppointment == null) {
             holder.mNoAppointment.setVisibility(View.VISIBLE);
             holder.mCheckBox.setVisibility(View.INVISIBLE);
             holder.mTimeView.setVisibility(View.INVISIBLE);
@@ -50,7 +51,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         } else {
             holder.mDateView.setText(mValues.get(position).getNextAppointment().getDate());
             holder.mTimeView.setText(mValues.get(position).getNextAppointment().getTime());
-            holder.mCheckBox.setChecked(holder.mItem.getNextAppointment().getCompleted());
+            holder.mCheckBox.setChecked(nextAppointment.getCompleted());
             holder.mNoAppointment.setVisibility(View.INVISIBLE);
             holder.mCheckBox.setVisibility(View.VISIBLE);
             holder.mTimeView.setVisibility(View.VISIBLE);
@@ -84,8 +85,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         holder.mCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.mItem.getNextAppointment().setCompleted(holder.mCheckBox.isChecked());
-                mListener.onAppointmentListCheckBoxInteraction(holder.mItem, holder.mCheckBox);
+                mListener.onAppointmentListCheckBoxInteraction(nextAppointment, holder.mCheckBox);
             }
         });
         holder.mReminderButton.setOnClickListener(new View.OnClickListener() {

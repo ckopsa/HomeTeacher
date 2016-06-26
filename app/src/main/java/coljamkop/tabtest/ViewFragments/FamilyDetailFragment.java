@@ -64,21 +64,55 @@ public class FamilyDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_family_detail, container, false);
 
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.detail_toolbar_layout);
+        final CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) rootView.findViewById(R.id.detail_toolbar_layout);
         if (appBarLayout != null) {
             appBarLayout.setTitle(family.familyName + " Family");
+            appBarLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String title;
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+                    if (!family.getFamilyName().equals("")) {
+                        input.setText(family.getFamilyName());
+                        title = "Edit Family Name:";
+                        new AlertDialog.Builder(getContext())
+                                .setTitle(title)
+                                .setIcon(android.R.drawable.ic_menu_edit)
+                                .setView(input)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        String text = input.getText().toString();
+                                        family.setFamilyName(text);
+                                        appBarLayout.setTitle(text + " Family");
+                                        DBHelper db = new DBHelper(getContext());
+                                        db.updateFamily(family);
+                                    }
+                                })
+                                .setNegativeButton(android.R.string.no, null)
+                                .show();
+                    }
+                }
+            });
         }
+
+        ImageButton trashFamily = (ImageButton) rootView.findViewById(R.id.detail_trash_button);
+        trashFamily.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onTrashFamilyButtonPress(family);
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.detail_fab_send_sms);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.addFamilyMember(family);
-                if (family.getMemberNameArray() != null) {
-                    rootView.findViewById(R.id.detail_family_title).setVisibility(View.VISIBLE);
-                }
             }
         });
+        if (family.getMemberList().isEmpty())
+            rootView.findViewById(R.id.detail_family_title).setVisibility(View.INVISIBLE);
 
         // Hide view objects if non-existent
         if (family != null) {
@@ -105,9 +139,9 @@ public class FamilyDetailFragment extends Fragment {
             Context context = rootView.getContext();
             RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.family_member_list);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            assert (family.getMemberNameArray() != null);
-            recyclerView.setAdapter(new MyFamilyMemberRecyclerViewAdapter(family.getMemberList(), mListener));
-
+            if (family.getMemberNameArray() != null) {
+                recyclerView.setAdapter(new MyFamilyMemberRecyclerViewAdapter(family.getMemberList(), mListener));
+            }
         }
         return rootView;
     }
@@ -316,5 +350,7 @@ public class FamilyDetailFragment extends Fragment {
         void onMapButtonPress(String postalAddress);
 
         void addFamilyMember(FamilyContent.Family family);
+
+        void onTrashFamilyButtonPress(FamilyContent.Family family);
     }
 }
