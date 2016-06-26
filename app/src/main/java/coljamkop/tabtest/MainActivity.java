@@ -9,12 +9,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -33,163 +29,16 @@ import java.util.Calendar;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Database.DBHelper;
-import coljamkop.tabtest.Dialogs.AppointmentOptionsDialogFragment;
-import coljamkop.tabtest.Dialogs.FamilyOptionsDialogFragment;
 import coljamkop.tabtest.Notifications.NotificationPublisher;
 import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
 import coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment;
 import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
-import coljamkop.tabtest.ViewFragments.FamilyViewFragment;
 
-import static coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
 
 public class MainActivity extends AppCompatActivity implements
-        OnFamilyListFragmentInteractionListener,
         AppointmentViewFragment.OnAppointmentListFragmentInteractionListener,
-        FamilyOptionsDialogFragment.OnFamilyOptionsDialogFragmentInteractionListener,
         FamilyDetailFragment.OnFamilyDetailFragmentInteractionListener,
-        AppointmentOptionsDialogFragment.OnAppointmentOptionsDialogFragmentInteractionListener,
         FamilyAppointmentsFragment.OnFamilyAppointmentListFragmentInteractionListener {
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
-
-    /*
-     * FamilyView Interfaces
-     */
-    @Override
-    public void onFamilyListFragmentInteraction(FamilyContent.Family family) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("family", family);
-        FamilyDetailFragment fragment = new FamilyDetailFragment();
-        fragment.setArguments(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(android.R.id.content, fragment);
-        ft.addToBackStack(null);
-        ft.commit();
-    }
-
-    @Override
-    public void onFamilyListAddFamilyButtonPress() {
-        final View view = getLayoutInflater().inflate(R.layout.dialog_add_family, null);
-
-        final RecyclerView familyList = (RecyclerView) findViewById(R.id.familylist);
-        final RecyclerView appointmentList = (RecyclerView) findViewById(R.id.appointmentlist);
-
-        new AlertDialog.Builder(this)
-            .setTitle("Add a family:")
-            .setIcon(android.R.drawable.ic_input_add)
-            .setView(view)
-            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    String familyName = ((EditText) view.findViewById(R.id.dialog_add_family_familyname)).getText().toString();
-                    String phoneNumber = ((EditText) view.findViewById(R.id.dialog_add_family_phonenumber)).getText().toString();
-                    String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
-                    String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
-                    if (!familyName.equals("")) {
-                        FamilyContent.Family family = new FamilyContent.Family(familyName);
-                        family.setPhoneNumber(phoneNumber);
-                        family.setEmailAddress(emailAddress);
-                        family.setPostalAddress(postalAddress);
-                        FamilyContent.addFamily(family);
-                        DBHelper db = new DBHelper(getApplicationContext());
-                        db.putFamily(family);
-                        familyList.getAdapter().notifyDataSetChanged();
-                        appointmentList.getAdapter().notifyDataSetChanged();
-                    }
-
-                }
-            })
-            .setNegativeButton(android.R.string.no, null)
-            .show();
-    }
-
-    @Override
-    public void onEditFamilyOptionSelected(final FamilyContent.Family family) {
-        final View view = getLayoutInflater().inflate(R.layout.dialog_add_family, null);
-
-        final RecyclerView familyList = (RecyclerView) findViewById(R.id.familylist);
-        final RecyclerView appointmentList = (RecyclerView) findViewById(R.id.appointmentlist);
-
-        final EditText familyName = (EditText) view.findViewById(R.id.dialog_add_family_familyname);
-        final EditText phoneNumber = (EditText) view.findViewById(R.id.dialog_add_family_phonenumber);
-        final EditText emailAddress = (EditText) view.findViewById(R.id.dialog_add_family_email_address);
-        final EditText postalAddress = (EditText) view.findViewById(R.id.dialog_add_family_postal_address);
-
-        familyName.setText(family.getFamilyName());
-        phoneNumber.setText(family.getPhoneNumber());
-        emailAddress.setText(family.getEmailAddress());
-        postalAddress.setText(family.getPostalAddress());
-
-        new AlertDialog.Builder(this)
-                .setTitle("Edit the " + family.getFamilyName() + " family:")
-                .setIcon(android.R.drawable.ic_menu_edit)
-                .setView(view)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        if (!familyName.equals("")) {
-                            family.setFamilyName(familyName.getText().toString());
-                            family.setPhoneNumber(phoneNumber.getText().toString());
-                            family.setEmailAddress(emailAddress.getText().toString());
-                            family.setPostalAddress(postalAddress.getText().toString());
-                            familyList.getAdapter().notifyDataSetChanged();
-                            appointmentList.getAdapter().notifyDataSetChanged();
-                            DBHelper db = new DBHelper(getApplicationContext());
-                            db.updateFamily(family);
-                        }
-
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
-    }
-
-    @Override
-    public void onDeleteFamilyOptionSelected(final FamilyContent.Family family) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Family")
-                .setMessage("Do you really want to delete this family?")
-                .setIcon(android.R.drawable.ic_delete)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        DBHelper db = new DBHelper(getApplicationContext());
-                        db.deleteFamily(family);
-                        FamilyContent.removeFamily(family);
-
-                        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.familylist);
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        recyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                    }})
-                .setNegativeButton(android.R.string.no, null).show();
-
-    }
-
-    @Override
-    public void onSendFamilySMSOptionSelected(final FamilyContent.Family family) {
-        String phoneNumber = family.getPhoneNumber();
-        if (!phoneNumber.equals("")) {
-            String message = "Hey " + family.familyName + "s! When can we home teach you guys?";
-            Uri number = Uri.parse("sms:" + phoneNumber);
-            Intent sendSMS = new Intent(Intent.ACTION_VIEW, number);
-            sendSMS.putExtra("sms_body", message);
-            startActivity(sendSMS);
-        } else {
-            Toast.makeText(getApplicationContext(), "No phone number to contact", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     /*
      * AppointmentView Interfaces
@@ -260,7 +109,29 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRemindButtonPress(FamilyContent.Family family) {
-        onSendFamilyReminderOptionSelected(family);
+        String phoneNumber = family.getPhoneNumber();
+        if (family.getNextAppointment() != null && !phoneNumber.equals("")) {
+            String message = "Hey " + family.getFamilyName()
+                    + "s! Just reminding you we have an appointment for "
+                    + family.getNextAppointment().getDate()
+                    + " at " + family.getNextAppointment().getTime() + ". See you then!";
+            if (!phoneNumber.equals("")) {
+                Uri number = Uri.parse("sms:" + phoneNumber);
+                Intent sendSMS = new Intent(Intent.ACTION_VIEW, number);
+                sendSMS.putExtra("sms_body", message);
+                startActivity(sendSMS);
+            }
+        } else {
+            if (!phoneNumber.equals("")) {
+                String message = "Hey " + family.familyName + "s! When can we home teach you guys?";
+                Uri number = Uri.parse("sms:" + phoneNumber);
+                Intent sendSMS = new Intent(Intent.ACTION_VIEW, number);
+                sendSMS.putExtra("sms_body", message);
+                startActivity(sendSMS);
+            } else {
+                Toast.makeText(getApplicationContext(), "No phone number to contact", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -274,6 +145,51 @@ public class MainActivity extends AppCompatActivity implements
             ft.addToBackStack(null);
             ft.commit();
         }
+    }
+
+    @Override
+    public void onAppointmentAddFamily() {
+        final View view = getLayoutInflater().inflate(R.layout.dialog_add_family, null);
+
+        final RecyclerView appointmentList = (RecyclerView) findViewById(R.id.appointmentlist);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Add a family:")
+                .setIcon(android.R.drawable.ic_input_add)
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String familyName = ((EditText) view.findViewById(R.id.dialog_add_family_familyname)).getText().toString();
+                        String phoneNumber = ((EditText) view.findViewById(R.id.dialog_add_family_phonenumber)).getText().toString();
+                        String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
+                        String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
+                        if (!familyName.equals("")) {
+                            FamilyContent.Family family = new FamilyContent.Family(familyName);
+                            family.setPhoneNumber(phoneNumber);
+                            family.setEmailAddress(emailAddress);
+                            family.setPostalAddress(postalAddress);
+                            FamilyContent.addFamily(family);
+                            DBHelper db = new DBHelper(getApplicationContext());
+                            db.putFamily(family);
+                            appointmentList.getAdapter().notifyDataSetChanged();
+                        }
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    @Override
+    public void onFamilyNameInteraction(FamilyContent.Family family) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("family", family);
+        FamilyDetailFragment fragment = new FamilyDetailFragment();
+        fragment.setArguments(bundle);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(android.R.id.content, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
@@ -309,69 +225,23 @@ public class MainActivity extends AppCompatActivity implements
             };
             DatePickerDialog datePickerFragment = new DatePickerDialog(this, onDateSetListener, year, month, day);
             datePickerFragment.show();
-
-            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    if (view.isShown()) {
-                        appointment.setHour(hourOfDay);
-                        appointment.setMinute(minute);
-                        Log.d("onTimeChanged", "time changed");
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        family.addAppointment(appointment);
-                        db.updateAppointment(appointment);
-                    }
-                }
-            };
-            TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener, hourOfDay, minute, false);
-            timePickerDialog.show();
-        }
-    }
-
-    @Override
-    public void onEditAppointmentOptionSelected(FamilyContent.Family family) {
-
-    }
-
-    @Override
-    public void onDeleteAppointmentOptionSelected(final FamilyContent.Family family) {
-        if (family.getNextAppointment() == null) {
-            Toast.makeText(getBaseContext(), "No appointment to delete", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
-            new AlertDialog.Builder(this)
-                    .setTitle("Delete Appointment")
-                    .setMessage("Do you really want to delete this appointment?")
-                    .setIcon(android.R.drawable.ic_delete)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            DBHelper db = new DBHelper(getApplicationContext());
-                            db.deleteAppointment(family.getNextAppointment());
-                            family.deleteNextAppointment();
+            if (appointment.getYear() != 0) {
+                TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        if (view.isShown()) {
+                            appointment.setHour(hourOfDay);
+                            appointment.setMinute(minute);
+                            Log.d("onTimeChanged", "time changed");
                             recyclerView.getAdapter().notifyDataSetChanged();
+                            family.addAppointment(appointment);
+                            db.updateAppointment(appointment);
                         }
-                    })
-                    .setNegativeButton(android.R.string.no, null).show();
-        }
-    }
-
-    @Override
-    public void onSendFamilyReminderOptionSelected(final FamilyContent.Family family) {
-        String phoneNumber = family.getPhoneNumber();
-        if (family.getNextAppointment() != null && !phoneNumber.equals("")) {
-            String message = "Hey " + family.getFamilyName()
-                    + "s! Just reminding you we have an appointment for "
-                    + family.getNextAppointment().getDate()
-                    + " at " + family.getNextAppointment().getTime() + ". See you then!";
-            if (!phoneNumber.equals("")) {
-                Uri number = Uri.parse("sms:" + phoneNumber);
-                Intent sendSMS = new Intent(Intent.ACTION_VIEW, number);
-                sendSMS.putExtra("sms_body", message);
-                startActivity(sendSMS);
+                    }
+                };
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener, hourOfDay, minute, false);
+                timePickerDialog.show();
             }
-        } else {
-            onSendFamilySMSOptionSelected(family);
         }
     }
 
@@ -449,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTrashFamilyButtonPress(final FamilyContent.Family family) {
-        final RecyclerView familyRecyclerView = (RecyclerView) findViewById(R.id.familylist);
         final RecyclerView appointmentRecyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
         new AlertDialog.Builder(this)
                 .setTitle("Delete Family")
@@ -460,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements
                         FamilyContent.removeFamily(family);
                         DBHelper db = new DBHelper(getApplicationContext());
                         db.deleteFamily(family);
-                        familyRecyclerView.getAdapter().notifyDataSetChanged();
                         appointmentRecyclerView.getAdapter().notifyDataSetChanged();
                         getSupportFragmentManager().popBackStack();
                     }
@@ -493,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements
         new AlertDialog.Builder(this)
                 .setTitle("Delete Appointment")
                 .setMessage("Do you really want to delete this appointment?")
-                .setIcon(android.R.drawable.ic_delete)
+                .setIcon(android.R.drawable.ic_menu_delete)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         FamilyContent.getFamily(appointment.getFamilyID()).deleteAppointment(appointment);
@@ -622,24 +490,14 @@ public class MainActivity extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        if (mViewPager != null) {
-            mViewPager.setAdapter(mSectionsPagerAdapter);
-        }
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        if (tabLayout != null) {
-            tabLayout.setupWithViewPager(mViewPager);
-        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.frag_container, AppointmentViewFragment.newInstance(1));
+        ft.commit();
 
         if (FamilyContent.FAMILIES.isEmpty()) {
             DBHelper db = new DBHelper(this);
-            if (db.doesDatabaseExist(this)) {
+            if (DBHelper.doesDatabaseExist(this)) {
                 for (FamilyContent.Family family:
                      db.getFamilyList()) {
                     FamilyContent.addFamily(family);
@@ -663,9 +521,9 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -680,10 +538,10 @@ public class MainActivity extends AppCompatActivity implements
         String emailBody = "";
         for (FamilyContent.Family fam :
                 FamilyContent.FAMILIES) {
-            if (fam.getNextAppointment() == null)
+            if (fam.getCurrentMonthAppointment() == null)
                 emailBody += "The " + fam.getFamilyName() + "s weren't taught this month.";
-            else if (fam.getNextAppointment().getCompleted())
-                emailBody += "The " + fam.getFamilyName() + "s were taught on " + fam.getNextAppointment().getDate()+ ".\n";
+            else if (fam.getCurrentMonthAppointment().getCompleted())
+                emailBody += "The " + fam.getFamilyName() + "s were taught on " + fam.getCurrentMonthAppointment().getDate()+ ".\n";
             else {
                 emailBody += "The " + fam.getFamilyName() + "s weren't taught this month.";
             }
@@ -716,46 +574,6 @@ public class MainActivity extends AppCompatActivity implements
 
             //TODO: For demo set after 5 seconds.
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
-        }
-    }
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            if (position == 0)
-                return AppointmentViewFragment.newInstance(1);
-            else
-                return FamilyViewFragment.newInstance(1);
-
-        }
-
-        @Override
-        public int getCount() {
-            // Show 2 total pages.
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Appointments";
-                case 1:
-                    return "Families";
-            }
-            return null;
         }
     }
 }

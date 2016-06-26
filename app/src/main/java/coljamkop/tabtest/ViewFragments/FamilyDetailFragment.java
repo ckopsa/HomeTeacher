@@ -1,6 +1,5 @@
 package coljamkop.tabtest.ViewFragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,25 +7,20 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Database.DBHelper;
 import coljamkop.tabtest.R;
 import coljamkop.tabtest.RecyclerViewAdapters.MyFamilyMemberRecyclerViewAdapter;
-import coljamkop.tabtest.RecyclerViewAdapters.MyFamilyRecyclerViewAdapter;
 
 /**
  * A fragment representing a single Family detail screen.

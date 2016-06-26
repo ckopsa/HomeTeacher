@@ -16,8 +16,8 @@
 
     <!--http://www.colourlovers.com/palette/94279/This_Desert_Life-->
     <color name="colorBackground">#DDDDDD</color>
-    <color name="colorPrimary">#455a64</color>
-    <color name="colorPrimaryDark">#4F6270</color>
-    <color name="colorPrimaryLight">#A0BEB8</color>
+    <color name="colorPrimary">#37474f</color>
+    <color name="colorPrimaryDark">#455a64</color>
+    <color name="colorPrimaryLight">#b0bec5</color>
     <color name="colorAccent">#ff7043</color>
 </resources>

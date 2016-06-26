@@ -57,6 +57,12 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
             holder.mDateView.setVisibility(View.VISIBLE);
         }
         holder.mFamilyNameView.setText(mValues.get(position).toString());
+        holder.mFamilyNameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onFamilyNameInteraction(holder.mItem);
+            }
+        });
         holder.mNoAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

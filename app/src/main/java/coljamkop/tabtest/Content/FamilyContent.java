@@ -98,12 +98,9 @@ public class FamilyContent implements Serializable {
 
         private boolean isGoodAppointment(Appointment appointment) {
             Calendar calendar = Calendar.getInstance();
-            if (calendar.get(Calendar.MONTH) + 1 <= appointment.getMonth() &&
+            return calendar.get(Calendar.MONTH) + 1 <= appointment.getMonth() &&
                     calendar.get(Calendar.YEAR) <= appointment.getYear() &&
-                    appointment.getCompleted() == false)
-                return true;
-            else
-                return false;
+                    appointment.getCompleted() == false;
         }
 
         /*

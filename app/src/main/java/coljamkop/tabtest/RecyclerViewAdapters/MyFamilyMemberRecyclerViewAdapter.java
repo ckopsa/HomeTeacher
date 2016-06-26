@@ -15,11 +15,9 @@ import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Content.FamilyContent.Family;
 import coljamkop.tabtest.R;
 import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
-import coljamkop.tabtest.ViewFragments.FamilyViewFragment.OnFamilyListFragmentInteractionListener;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Family} and makes a call to the
- * specified {@link OnFamilyListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyFamilyMemberRecyclerViewAdapter extends RecyclerView.Adapter<MyFamilyMemberRecyclerViewAdapter.ViewHolder> {

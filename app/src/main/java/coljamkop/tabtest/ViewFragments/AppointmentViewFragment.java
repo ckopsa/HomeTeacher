@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.CheckBox;
 
 import coljamkop.tabtest.Content.FamilyContent;
@@ -62,15 +63,29 @@ public class AppointmentViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_appointment_list, container, false);
+        // set the FAB
+        final FloatingActionButton addFamilyFAB = (FloatingActionButton)view.findViewById(R.id.appointment_fab);
+        addFamilyFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onAppointmentAddFamily();
+            }
+        });
+
         // Set the adapter
         if (view.findViewById(R.id.appointmentlist) instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.appointmentlist);
-            if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+                    if (dy > 0 && addFamilyFAB.isShown())
+                        addFamilyFAB.hide();
+                    else
+                        addFamilyFAB.show();
+                }
+            });
             recyclerView.setAdapter(new MyAppointmentRecyclerViewAdapter(FAMILIES, mListener));
         }
         return view;
@@ -116,5 +131,9 @@ public class AppointmentViewFragment extends Fragment {
         void onRemindButtonPress(Family family);
 
         void onListButtonPress(Family family);
+
+        void onAppointmentAddFamily();
+
+        void onFamilyNameInteraction(Family family);
     }
 }

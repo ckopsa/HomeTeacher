@@ -47,10 +47,10 @@
                     android:layout_marginLeft="@dimen/text_margin"
                     android:layout_marginRight="@dimen/text_margin"
                     android:textAlignment="gravity"
-                    android:textIsSelectable="true"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
-                    android:gravity="center_vertical|center_horizontal" />
+                    android:gravity="center_vertical|center_horizontal"
+                    android:clickable="true"/>
 
                 <ImageButton
                     android:layout_width="50dp"
