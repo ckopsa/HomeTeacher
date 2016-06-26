@@ -107,7 +107,7 @@ public class AppointmentViewFragment extends Fragment {
     public interface OnAppointmentListFragmentInteractionListener {
         void onAppointmentListFragmentInteraction(Family family);
 
-        void onAppointmentListCheckBoxInteraction(Appointment appointment, CheckBox mCheckBox);
+        void onAppointmentListCheckBoxInteraction(Appointment appointment);
 
         void onAppointmentTimeClick(Family family);
 

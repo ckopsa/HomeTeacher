@@ -196,9 +196,9 @@ public class MainActivity extends AppCompatActivity implements
      */
 
     @Override
-    public void onAppointmentListCheckBoxInteraction(FamilyContent.Appointment appointment, CheckBox mCheckBox) {
+    public void onAppointmentListCheckBoxInteraction(FamilyContent.Appointment appointment) {
         if (appointment != null) {
-            appointment.setCompleted(mCheckBox.isChecked());
+            appointment.setCompleted(true);
             if (appointment.getCompleted())
                 Toast.makeText(getBaseContext(), "Appointment Completed", Toast.LENGTH_SHORT).show();
             DBHelper db = new DBHelper(getApplicationContext());
