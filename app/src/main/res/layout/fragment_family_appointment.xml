@@ -16,7 +16,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="15dp"
                 android:paddingTop="15dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimaryLight"
                 android:orientation="horizontal">
 
                 <CheckBox

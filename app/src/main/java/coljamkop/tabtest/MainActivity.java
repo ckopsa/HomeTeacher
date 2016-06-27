@@ -164,10 +164,10 @@ public class MainActivity extends AppCompatActivity implements
                         String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
                         String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
                         if (!familyName.equals("")) {
-                            FamilyContent.Family family = new FamilyContent.Family(familyName);
-                            family.setPhoneNumber(phoneNumber);
-                            family.setEmailAddress(emailAddress);
-                            family.setPostalAddress(postalAddress);
+                            FamilyContent.Family family = new FamilyContent.Family(familyName.trim());
+                            family.setPhoneNumber(phoneNumber.trim());
+                            family.setEmailAddress(emailAddress.trim());
+                            family.setPostalAddress(postalAddress.trim());
                             FamilyContent.addFamily(family);
                             DBHelper db = new DBHelper(getApplicationContext());
                             db.putFamily(family);
@@ -225,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements
             };
             DatePickerDialog datePickerFragment = new DatePickerDialog(this, onDateSetListener, year, month, day);
             datePickerFragment.show();
-            if (appointment.getYear() != 0) {
                 TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -241,7 +240,6 @@ public class MainActivity extends AppCompatActivity implements
                 };
                 TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener, hourOfDay, minute, false);
                 timePickerDialog.show();
-            }
         }
     }
 
@@ -334,6 +332,11 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 })
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    @Override
+    public void onFamilyNameEdit(FamilyContent.Family family) {
+        ((RecyclerView)findViewById(R.id.appointmentlist)).getAdapter().notifyDataSetChanged();
     }
 
     /*

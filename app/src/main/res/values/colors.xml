@@ -8,16 +8,15 @@
     <!--<color name="colorAccent">#FF4081</color>-->
 
     <!--http://www.colourlovers.com/palette/94279/This_Desert_Life-->
-    <!--<color name="colorBackground">#DDE0CF</color>-->
-    <!--<color name="colorPrimary">#937460</color>-->
-    <!--<color name="colorPrimaryDark">#AD8B32</color>-->
-    <!--<color name="colorPrimaryLight">#C6BE9A</color>-->
-    <!--<color name="colorAccent">#8C5B7B</color>-->
-
-    <!--http://www.colourlovers.com/palette/94279/This_Desert_Life-->
-    <color name="colorBackground">#DDDDDD</color>
-    <color name="colorPrimary">#37474f</color>
-    <color name="colorPrimaryDark">#455a64</color>
-    <color name="colorPrimaryLight">#b0bec5</color>
-    <color name="colorAccent">#ff7043</color>
+    <!--<color name="colorBackground">#e0e0e0</color>-->
+    <!--<color name="colorPrimary">#37474f</color>-->
+    <!--<color name="colorPrimaryDark">#455a64</color>-->
+    <!--<color name="colorPrimaryLight">#b0bec5</color>-->
+    <!--<color name="colorAccent">#ff7043</color>-->
+    <!--&lt;!&ndash;http://www.colourlovers.com/palette/94279/This_Desert_Life&ndash;&gt;-->
+    <color name="colorBackground">#E8EAF6</color>
+    <color name="colorPrimary">#237ba2</color>
+    <color name="colorPrimaryLight">#237ba2</color>
+    <color name="colorPrimaryDark">#14465c</color>
+    <color name="colorAccent">#c83130</color>
 </resources>

@@ -77,8 +77,9 @@ public class FamilyDetailFragment extends Fragment {
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         String text = input.getText().toString();
-                                        family.setFamilyName(text);
-                                        appBarLayout.setTitle(text + " Family");
+                                        family.setFamilyName(text.trim());
+                                        appBarLayout.setTitle(text.trim() + " Family");
+                                        mListener.onFamilyNameEdit(family);
                                         DBHelper db = new DBHelper(getContext());
                                         db.updateFamily(family);
                                     }
@@ -142,6 +143,7 @@ public class FamilyDetailFragment extends Fragment {
 
     private void phoneNumberSetup(final View rootView) {
         final TextView phoneNumber = ((TextView) rootView.findViewById(R.id.detail_phone_number));
+        phoneNumber.setText(family.getPhoneNumber());
         phoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,8 +160,8 @@ public class FamilyDetailFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String text = input.getText().toString();
-                                    family.setPhoneNumber(text);
-                                    phoneNumber.setText(text);
+                                    family.setPhoneNumber(text.trim());
+                                    phoneNumber.setText(text.trim());
                                     DBHelper db = new DBHelper(getContext());
                                     db.updateFamily(family);
                                 }
@@ -176,8 +178,8 @@ public class FamilyDetailFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String text = input.getText().toString();
-                                    family.setPhoneNumber(text);
-                                    phoneNumber.setText(text);
+                                    family.setPhoneNumber(text.trim());
+                                    phoneNumber.setText(text.trim());
                                     rootView.findViewById(R.id.detail_call_button).setVisibility(View.VISIBLE);
                                     rootView.findViewById(R.id.detail_sms_button).setVisibility(View.VISIBLE);
                                     DBHelper db = new DBHelper(getContext());
@@ -207,6 +209,7 @@ public class FamilyDetailFragment extends Fragment {
 
     private void emailAddressSetup(final View rootView) {
         final TextView email = ((TextView) rootView.findViewById(R.id.detail_email));
+        email.setText(family.getEmailAddress());
         email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,8 +226,8 @@ public class FamilyDetailFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String text = input.getText().toString();
-                                    family.setEmailAddress(text);
-                                    email.setText(text);
+                                    family.setEmailAddress(text.trim());
+                                    email.setText(text.trim());
                                     DBHelper db = new DBHelper(getContext());
                                     db.updateFamily(family);
                                 }
@@ -241,8 +244,8 @@ public class FamilyDetailFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String text = input.getText().toString();
-                                    family.setEmailAddress(text);
-                                    email.setText(text);
+                                    family.setEmailAddress(text.trim());
+                                    email.setText(text.trim());
                                     rootView.findViewById(R.id.detail_email_button).setVisibility(View.VISIBLE);
                                     DBHelper db = new DBHelper(getContext());
                                     db.updateFamily(family);
@@ -265,6 +268,7 @@ public class FamilyDetailFragment extends Fragment {
 
     private void postalAddressSetup(final View rootView) {
         final TextView address = ((TextView) rootView.findViewById(R.id.detail_address));
+        address.setText(family.getPostalAddress());
         address.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,8 +285,8 @@ public class FamilyDetailFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String text = input.getText().toString();
-                                    family.setPostalAddress(text);
-                                    address.setText(text);
+                                    family.setPostalAddress(text.trim());
+                                    address.setText(text.trim());
                                     DBHelper db = new DBHelper(getContext());
                                     db.updateFamily(family);
                                 }
@@ -299,8 +303,8 @@ public class FamilyDetailFragment extends Fragment {
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     String text = input.getText().toString();
-                                    family.setPostalAddress(text);
-                                    address.setText(text);
+                                    family.setPostalAddress(text.trim());
+                                    address.setText(text.trim());
                                     rootView.findViewById(R.id.detail_map_button).setVisibility(View.VISIBLE);
                                     DBHelper db = new DBHelper(getContext());
                                     db.updateFamily(family);
@@ -346,5 +350,7 @@ public class FamilyDetailFragment extends Fragment {
         void addFamilyMember(FamilyContent.Family family);
 
         void onTrashFamilyButtonPress(FamilyContent.Family family);
+
+        void onFamilyNameEdit(FamilyContent.Family family);
     }
 }
