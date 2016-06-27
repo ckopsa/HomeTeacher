@@ -5,99 +5,103 @@
     android:layout_marginTop="30dp">
 
     <TextView
+        android:id="@+id/detail_contact_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Contact Information"
-        android:id="@+id/detail_contact_title"
-        android:paddingLeft="5dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true" />
+        android:paddingLeft="5dp"
+        android:text="Contact Information"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
+        android:id="@+id/detail_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/detail_contact_title"
         android:padding="16dp"
         android:text="(530) 492-1439"
-        android:id="@+id/detail_phone_number"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/detail_contact_title"
-        android:layout_alignParentStart="true" />
+        android:textStyle="bold" />
 
     <ImageButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@android:drawable/stat_notify_chat"
-        android:background="@drawable/text_border"
         android:id="@+id/detail_sms_button"
-        android:layout_marginLeft="3dp"
-        android:layout_marginRight="3dp"
-        android:layout_below="@+id/detail_contact_title"
-        android:layout_alignEnd="@+id/family_member_list" />
-
-    <ImageButton
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@android:drawable/stat_sys_phone_call"
-        android:background="@drawable/text_border"
-        android:id="@+id/detail_call_button"
+        android:layout_alignEnd="@+id/family_member_list"
+        android:layout_below="@+id/detail_contact_title"
         android:layout_marginLeft="3dp"
         android:layout_marginRight="3dp"
+        android:background="@drawable/text_border"
+        android:src="@android:drawable/stat_notify_chat"
+        android:tint="@color/cardview_dark_background" />
+
+    <ImageButton
+        android:id="@+id/detail_call_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignTop="@+id/detail_sms_button"
-        android:layout_toStartOf="@+id/detail_sms_button" />
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:layout_toStartOf="@+id/detail_sms_button"
+        android:background="@drawable/text_border"
+        android:src="@android:drawable/stat_sys_phone_call"
+        android:tint="@color/cardview_dark_background" />
 
     <TextView
+        android:id="@+id/detail_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/detail_phone_number"
         android:padding="16dp"
         android:text="coljamkop@gmail.com"
-        android:id="@+id/detail_email"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/detail_phone_number"
-        android:layout_alignParentStart="true" />
+        android:textStyle="bold" />
 
     <ImageButton
+        android:id="@+id/detail_email_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@android:drawable/sym_action_email"
-        android:background="@drawable/text_border"
-        android:id="@+id/detail_email_button"
         android:layout_below="@+id/detail_phone_number"
+        android:layout_margin="3dp"
         android:layout_toEndOf="@+id/detail_call_button"
-        android:layout_margin="3dp" />
+        android:background="@drawable/text_border"
+        android:src="@android:drawable/sym_action_email"
+        android:tint="@color/cardview_dark_background" />
 
     <TextView
+        android:id="@+id/detail_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/detail_email"
         android:padding="16dp"
         android:text="3909 Neal Road, Paradise, CA"
-        android:id="@+id/detail_address"
         android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_below="@+id/detail_email"
-        android:layout_alignParentStart="true" />
+        android:textStyle="bold" />
 
     <ImageButton
+        android:id="@+id/detail_map_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@android:drawable/ic_dialog_map"
-        android:id="@+id/detail_map_button"
-        android:background="@drawable/text_border"
         android:layout_below="@+id/detail_email_button"
+        android:layout_margin="3dp"
         android:layout_toEndOf="@+id/detail_call_button"
-        android:layout_margin="3dp" />
+        android:background="@drawable/text_border"
+        android:src="@android:drawable/ic_dialog_map"
+        android:tint="@color/cardview_dark_background" />
 
     <TextView
+        android:id="@+id/detail_family_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Family Members"
-        android:id="@+id/detail_family_title"
-        android:paddingLeft="5dp"
+        android:layout_alignStart="@+id/family_member_list"
         android:layout_below="@+id/detail_address"
-        android:layout_alignStart="@+id/family_member_list" />
+        android:paddingLeft="5dp"
+        android:text="Family Members"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -106,14 +110,14 @@
         android:name="coljamkop.tabtest.FamilyFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_below="@+id/detail_family_title"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:paddingBottom="30dp"
         app:layoutManager="LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".ViewFragments.FamilyViewFragment"
-        tools:listitem="@layout/fragment_family"
-        android:layout_below="@+id/detail_family_title"
-        android:layout_centerHorizontal="true" />
+        tools:listitem="@layout/fragment_family" />
 
 </RelativeLayout>

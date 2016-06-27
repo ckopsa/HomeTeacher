@@ -14,9 +14,10 @@
     <!--<color name="colorPrimaryLight">#b0bec5</color>-->
     <!--<color name="colorAccent">#ff7043</color>-->
     <!--&lt;!&ndash;http://www.colourlovers.com/palette/94279/This_Desert_Life&ndash;&gt;-->
-    <color name="colorBackground">#E8EAF6</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorCardText">#e6000000</color>
     <color name="colorPrimary">#237ba2</color>
-    <color name="colorPrimaryLight">#237ba2</color>
+    <color name="colorPrimaryLight">#e0e0e0</color>
     <color name="colorPrimaryDark">#14465c</color>
-    <color name="colorAccent">#c83130</color>
+    <color name="colorAccent">#FF9C2E</color>
 </resources>

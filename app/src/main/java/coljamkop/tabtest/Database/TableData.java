@@ -7,7 +7,8 @@ import android.provider.BaseColumns;
  */
 public class TableData {
     // no accidental initialization
-    public TableData() {}
+    public TableData() {
+    }
 
     public static abstract class AppointmentInfo implements BaseColumns {
         // table name

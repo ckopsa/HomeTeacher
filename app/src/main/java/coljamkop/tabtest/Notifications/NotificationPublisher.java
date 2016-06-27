@@ -25,7 +25,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(title)
                         .setContentText(message)
-                         .setAutoCancel(true);
+                        .setAutoCancel(true);
 
         Intent resultIntent = new Intent(context, MainActivity.class);
 

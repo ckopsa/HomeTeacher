@@ -3,71 +3,71 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
-        <android.support.v7.widget.CardView
-            xmlns:card_view="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/card_view"
-            android:layout_gravity="center"
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="4dp">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:cardCornerRadius="4dp">
+            android:background="@color/colorPrimaryLight"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingTop="15dp">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
+            <CheckBox
+                android:id="@+id/family_appointment_checkBox"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="15dp"
-                android:paddingTop="15dp"
-                android:background="@color/colorPrimaryLight"
-                android:orientation="horizontal">
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp" />
 
-                <CheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/family_appointment_checkBox"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="10dp" />
+            <ImageButton
+                android:id="@+id/family_family_appointment_trash_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:background="@null"
+                android:src="@android:drawable/ic_menu_delete" />
 
-                <ImageButton
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@android:drawable/ic_menu_delete"
-                    android:id="@+id/family_family_appointment_trash_button"
-                    android:background="@null"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignParentEnd="true" />
+            <TextView
+                android:id="@+id/family_appointment_date"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/text_margin"
+                android:layout_marginRight="@dimen/text_margin"
+                android:layout_toEndOf="@+id/family_appointment_checkBox"
+                android:background="@drawable/text_border"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Date"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="@color/colorCardText" />
 
-                <TextView
-                    android:id="@+id/family_appointment_date"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorBackground"
-                    android:text="Date"
-                    android:padding="10dp"
-                    android:textAppearance="?attr/textAppearanceListItem"
-                    android:layout_marginLeft="@dimen/text_margin"
-                    android:layout_marginRight="@dimen/text_margin"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/family_appointment_checkBox"
-                    android:background="@drawable/text_border" />
+            <TextView
+                android:id="@+id/family_appointment_time"
+                android:layout_width="110dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/family_family_appointment_trash_button"
+                android:background="@drawable/text_border"
+                android:clickable="true"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Time"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="@color/colorCardText" />
 
-                <TextView
-                    android:id="@+id/family_appointment_time"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorBackground"
-                    android:text="Time"
-                    android:padding="10dp"
-                    android:textAppearance="?attr/textAppearanceListItem"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/text_border"
-                    android:layout_toLeftOf="@+id/family_family_appointment_trash_button" />
-
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

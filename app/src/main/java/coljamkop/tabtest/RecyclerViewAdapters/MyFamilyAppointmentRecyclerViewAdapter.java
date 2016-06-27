@@ -8,11 +8,11 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.List;
+
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.R;
 import coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment;
-
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link coljamkop.tabtest.Content.FamilyContent.Appointment} and makes a call to the

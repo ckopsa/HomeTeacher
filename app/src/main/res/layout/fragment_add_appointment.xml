@@ -7,43 +7,43 @@
     <!-- TODO: Update blank fragment layout -->
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Family"
-        android:ems="10"
         android:id="@+id/editFamilyName"
-        android:layout_gravity="center_horizontal|top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/editTime" />
+        android:layout_alignStart="@+id/editTime"
+        android:layout_gravity="center_horizontal|top"
+        android:ems="10"
+        android:hint="Family"
+        android:inputType="textPersonName" />
 
     <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="date"
-        android:hint="Date"
-        android:ems="10"
         android:id="@+id/editDate"
-        android:layout_gravity="center"
-        android:layout_below="@+id/editTime"
-        android:layout_alignStart="@+id/editTime" />
-
-    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="time"
-        android:hint="Time"
+        android:layout_alignStart="@+id/editTime"
+        android:layout_below="@+id/editTime"
+        android:layout_gravity="center"
         android:ems="10"
+        android:hint="Date"
+        android:inputType="date" />
+
+    <EditText
         android:id="@+id/editTime"
-        android:layout_gravity="center_horizontal|bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/editFamilyName"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|bottom"
+        android:ems="10"
+        android:hint="Time"
+        android:inputType="time" />
 
     <Button
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Appointment"
-        android:id="@+id/button"
         android:layout_below="@+id/editDate"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="Add Appointment" />
 </RelativeLayout>

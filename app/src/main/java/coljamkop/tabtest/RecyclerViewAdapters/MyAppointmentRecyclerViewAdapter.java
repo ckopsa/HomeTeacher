@@ -4,16 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import coljamkop.tabtest.ViewFragments.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
 import coljamkop.tabtest.Content.FamilyContent.Appointment;
 import coljamkop.tabtest.R;
+import coljamkop.tabtest.ViewFragments.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
 
 import static coljamkop.tabtest.Content.FamilyContent.Family;
 
@@ -43,7 +41,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         final Appointment nextAppointment = holder.mItem.getNextAppointment();
-        if(nextAppointment == null) {
+        if (nextAppointment == null) {
             holder.mNoAppointment.setVisibility(View.VISIBLE);
             holder.mCheckBox.setVisibility(View.INVISIBLE);
             holder.mTimeView.setVisibility(View.INVISIBLE);

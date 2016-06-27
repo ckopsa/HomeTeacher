@@ -2,18 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="15dp"
+    android:orientation="horizontal"
     android:paddingBottom="15dp"
-    android:orientation="horizontal">
+    android:paddingTop="15dp">
 
     <TextView
         android:id="@+id/family_family_name"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
-        android:text="Family"
-        android:textStyle="bold"
-        android:textAppearance="?attr/textAppearanceListItem"
         android:layout_marginLeft="@dimen/text_margin"
-        android:layout_marginRight="@dimen/text_margin" />
+        android:layout_marginRight="@dimen/text_margin"
+        android:text="Family"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 </LinearLayout>

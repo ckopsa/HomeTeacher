@@ -3,10 +3,8 @@ package coljamkop.tabtest.Content;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +12,7 @@ import java.util.Map;
 /**
  * Helper class for providing sample familyName for user interfaces created by
  * Android template wizards.
- * <p/>
+ * <p>
  * TODO: Replace all uses of this class before publishing your app.
  */
 public class FamilyContent implements Serializable {
@@ -33,7 +31,7 @@ public class FamilyContent implements Serializable {
 
     public static String[] getFamilyNames() {
         List<String> familyNames = new ArrayList<String>();
-        for(Family family : FAMILIES) {
+        for (Family family : FAMILIES) {
             familyNames.add(family.familyName);
         }
         return familyNames.toArray(new String[familyNames.size()]);
@@ -93,7 +91,7 @@ public class FamilyContent implements Serializable {
                         return appointment;
                 }
             }
-                return null;
+            return null;
         }
 
         private boolean isGoodAppointment(Appointment appointment) {
@@ -169,11 +167,10 @@ public class FamilyContent implements Serializable {
         }
 
         public boolean deleteNextAppointment() {
-            if(getNextAppointment() != null) {
+            if (getNextAppointment() != null) {
                 deleteAppointment(getNextAppointment());
                 return true;
-            }
-            else
+            } else
                 return false;
         }
 
@@ -194,7 +191,7 @@ public class FamilyContent implements Serializable {
 
         public List<Appointment> getAppointmentList() {
             if (appointments != null) {
-                    return appointments;
+                return appointments;
             }
             return null;
         }
@@ -277,7 +274,7 @@ public class FamilyContent implements Serializable {
                 time = String.valueOf(hourOfDay) + ":";
             }
             // minute logic
-            if (minute  < 10) {
+            if (minute < 10) {
                 time += "0" + String.valueOf(minute);
             } else {
                 time += String.valueOf(minute);
@@ -352,6 +349,7 @@ public class FamilyContent implements Serializable {
             return day;
         }
     }
+
     public static class FamilyMember implements Serializable {
         private int id;
         private String name;

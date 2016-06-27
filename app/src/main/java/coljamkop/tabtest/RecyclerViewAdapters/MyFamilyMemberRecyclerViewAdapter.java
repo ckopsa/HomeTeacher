@@ -1,13 +1,10 @@
 package coljamkop.tabtest.RecyclerViewAdapters;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Interpolator;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -41,26 +38,6 @@ public class MyFamilyMemberRecyclerViewAdapter extends RecyclerView.Adapter<MyFa
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mContentView.setText(mValues.get(position).getName());
-
-//        holder.mView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != mListener) {
-//                    // Notify the active callbacks interface (the activity, if the
-//                    // fragment is attached to one) that an item has been selected.
-//                    //mListener.onFamilyMemberListFragmentInteraction(holder.mItem);
-//                }
-//            }
-//        });
-//
-//        holder.mView.setOnLongClickListener(new View.OnLongClickListener() {
-//
-//            @Override
-//            public boolean onLongClick(View v) {
-//                //mListener.onFamilyMemberListLongClick(holder.mItem);
-//                return false;
-//            }
-//        });
     }
 
     @Override

@@ -13,7 +13,9 @@ import java.util.List;
 
 import coljamkop.tabtest.Content.FamilyContent;
 
-import static coljamkop.tabtest.Database.TableData.*;
+import static coljamkop.tabtest.Database.TableData.AppointmentInfo;
+import static coljamkop.tabtest.Database.TableData.FamilyInfo;
+import static coljamkop.tabtest.Database.TableData.FamilyMemberInfo;
 
 /**
  * Created by Aghbac on 6/20/16.
@@ -21,7 +23,12 @@ import static coljamkop.tabtest.Database.TableData.*;
 public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "home_teaching.db";
-
+    private static final String SQL_DELETE_APPOINTMENT_TABLE =
+            "DROP TABLE IF EXISTS " + FamilyInfo.TABLE_NAME;
+    private static final String SQL_DELETE_FAMILY_MEMBER_TABLE =
+            "DROP TABLE IF EXISTS " + FamilyMemberInfo.TABLE_NAME;
+    private static final String SQL_DELETE_FAMILY_TABLE =
+            "DROP TABLE IF EXISTS " + FamilyInfo.TABLE_NAME;
     private String SQL_CREATE_APPOINTMENT_TABLE = "CREATE TABLE "
             + AppointmentInfo.TABLE_NAME
             + " ("
@@ -31,7 +38,6 @@ public class DBHelper extends SQLiteOpenHelper {
             + AppointmentInfo.COLUMN_NAME_TIME + " TEXT, "
             + AppointmentInfo.COLUMN_NAME_FAMILY_ID + " TEXT, "
             + AppointmentInfo.COLUMN_NAME_COMPLETED + " INTEGER);";
-
     private String SQL_CREATE_FAMILY_MEMBER_TABLE = "CREATE TABLE "
             + FamilyMemberInfo.TABLE_NAME
             + " ("
@@ -41,8 +47,6 @@ public class DBHelper extends SQLiteOpenHelper {
             + FamilyMemberInfo.COLUMN_NAME_FAMILY_ID + " TEXT, "
             + FamilyMemberInfo.COLUMN_NAME_PHONE_NUMBER + " TEXT, "
             + FamilyMemberInfo.COLUMN_NAME_BIRTHDAY + " TEXT);";
-
-
     private String SQL_CREATE_FAMILY_TABLE = "CREATE TABLE "
             + FamilyInfo.TABLE_NAME
             + " ("
@@ -53,17 +57,13 @@ public class DBHelper extends SQLiteOpenHelper {
             + FamilyInfo.COLUMN_NAME_EMAIL_ADDRESS + " TEXT, "
             + FamilyInfo.COLUMN_NAME_POSTAL_ADDRESS + " TEXT);";
 
-    private static final String SQL_DELETE_APPOINTMENT_TABLE =
-            "DROP TABLE IF EXISTS " + FamilyInfo.TABLE_NAME;
-
-    private static final String SQL_DELETE_FAMILY_MEMBER_TABLE =
-            "DROP TABLE IF EXISTS " + FamilyMemberInfo.TABLE_NAME;
-
-    private static final String SQL_DELETE_FAMILY_TABLE =
-            "DROP TABLE IF EXISTS " + FamilyInfo.TABLE_NAME;
-
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static boolean doesDatabaseExist(Context context) {
+        File dbFile = context.getDatabasePath(DATABASE_NAME);
+        return dbFile.exists();
     }
 
     @Override
@@ -81,11 +81,6 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public static boolean doesDatabaseExist(Context context) {
-        File dbFile = context.getDatabasePath(DATABASE_NAME);
-        return dbFile.exists();
-    }
-
     /*
      * Appointment Database Functions
      */
@@ -99,6 +94,7 @@ public class DBHelper extends SQLiteOpenHelper {
         getWritableDatabase().insert(AppointmentInfo.TABLE_NAME, null, values);
         Log.d("Database", "appointment added");
     }
+
     public boolean updateAppointment(FamilyContent.Appointment appointment) {
         ContentValues values = new ContentValues();
         values.put(AppointmentInfo.COLUMN_NAME_ENTRY_ID, appointment.getID());
@@ -114,7 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Define 'where' part of query.
         String selection = AppointmentInfo.COLUMN_NAME_ENTRY_ID + " LIKE ?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = { appointment.getID() };
+        String[] selectionArgs = {appointment.getID()};
         // Issue SQL statement.
         getWritableDatabase().delete(AppointmentInfo.TABLE_NAME, selection, selectionArgs);
         Log.d("Database", "appointment deleted");
@@ -160,7 +156,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 AppointmentInfo.COLUMN_NAME_COMPLETED
         };
 
-        String selection =  AppointmentInfo.COLUMN_NAME_FAMILY_ID + "=?";
+        String selection = AppointmentInfo.COLUMN_NAME_FAMILY_ID + "=?";
         String[] selectionArgs = {String.valueOf(familyId)};
 
         // How you want the results sorted in the resulting Cursor
@@ -177,7 +173,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 sortOrder                    // The sort order
         );
 
-        while(c.moveToNext()) {
+        while (c.moveToNext()) {
             appointments.add(new FamilyContent.Appointment(
                     c.getString(0),
                     c.getString(1),
@@ -218,7 +214,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Define 'where' part of query.
         String selection = FamilyMemberInfo.COLUMN_NAME_ENTRY_ID + " LIKE ?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = { familyMember.getID() };
+        String[] selectionArgs = {familyMember.getID()};
         // Issue SQL statement.
         getWritableDatabase().delete(FamilyMemberInfo.TABLE_NAME, selection, selectionArgs);
     }
@@ -263,7 +259,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 FamilyMemberInfo.COLUMN_NAME_BIRTHDAY
         };
 
-        String selection =  FamilyMemberInfo.COLUMN_NAME_FAMILY_ID + "=?";
+        String selection = FamilyMemberInfo.COLUMN_NAME_FAMILY_ID + "=?";
         String[] selectionArgs = {String.valueOf(familyId)};
 
         // How you want the results sorted in the resulting Cursor
@@ -280,8 +276,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 sortOrder                    // The sort order
         );
 
-        while(c.moveToNext()) {
-            familyMembers.add(new FamilyContent.FamilyMember (
+        while (c.moveToNext()) {
+            familyMembers.add(new FamilyContent.FamilyMember(
                     c.getString(0),
                     c.getString(1),
                     Integer.parseInt(c.getString(2)),
@@ -307,6 +303,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         getWritableDatabase().insert(FamilyInfo.TABLE_NAME, null, values);
     }
+
     public boolean updateFamily(FamilyContent.Family family) {
         ContentValues values = new ContentValues();
         values.put(FamilyInfo.COLUMN_NAME_ENTRY_ID, family.getID());
@@ -323,7 +320,7 @@ public class DBHelper extends SQLiteOpenHelper {
         // Define 'where' part of query.
         String selection = FamilyInfo.COLUMN_NAME_ENTRY_ID + " LIKE ?";
         // Specify arguments in placeholder order.
-        String[] selectionArgs = { family.getID() };
+        String[] selectionArgs = {family.getID()};
         // Issue SQL statement.
         SQLiteDatabase db = getWritableDatabase();
         db.delete(FamilyInfo.TABLE_NAME, selection, selectionArgs);
@@ -413,7 +410,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 null,                                     // don't filter by row groups
                 sortOrder                                 // The sort order
         );
-        Log.d("Database"," family gotten");
+        Log.d("Database", " family gotten");
 
         return c;
     }
