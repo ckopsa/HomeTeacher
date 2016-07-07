@@ -202,13 +202,19 @@ public class FamilyContent implements Serializable {
 
         public Appointment getCurrentMonthAppointment() {
             Calendar calendar = Calendar.getInstance();
-            for (Appointment appointment :
-                    appointments) {
-                if (calendar.get(Calendar.MONTH) + 1 <= appointment.getMonth() &&
-                        calendar.get(Calendar.YEAR) <= appointment.getYear())
-                    return appointment;
+            if (appointments != null) {
+                for (Appointment appointment :
+                        appointments) {
+                    if (calendar.get(Calendar.MONTH) + 1 <= appointment.getMonth() &&
+                            calendar.get(Calendar.YEAR) <= appointment.getYear())
+                        return appointment;
+                }
             }
             return null;
+        }
+
+        public void removeFamilyMember(FamilyMember familyMember) {
+            familyMembers.remove(familyMember);
         }
     }
 

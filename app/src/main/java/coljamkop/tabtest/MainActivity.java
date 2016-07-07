@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -337,6 +338,53 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFamilyNameEdit(FamilyContent.Family family) {
         ((RecyclerView)findViewById(R.id.appointmentlist)).getAdapter().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onTrashFamilyMemberButtonPress(final FamilyContent.FamilyMember familyMember) {
+        final FamilyContent.Family family = FamilyContent.getFamily(familyMember.getFamilyID());
+        final RecyclerView familyMemberRecyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Family Member")
+                .setMessage("Do you really want to remove " + familyMember.getName() +
+                        " from the " + family.getFamilyName() + " family?")
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        DBHelper db = new DBHelper(getApplicationContext());
+                        db.deleteFamilyMember(familyMember);
+                        family.removeFamilyMember(familyMember);
+                        familyMemberRecyclerView.getAdapter().notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
+        }
+
+    @Override
+    public void onFamilyMemberNameEdit(final FamilyContent.FamilyMember familyMember) {
+        final RecyclerView familyMemberRecyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+        String title;
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
+        if (!familyMember.getName().equals("")) {
+            input.setText(familyMember.getName());
+            title = "Edit Family Member Name:";
+            new AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setIcon(android.R.drawable.ic_menu_edit)
+                    .setView(input)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String text = input.getText().toString();
+                            familyMember.setName(text.trim());
+                            DBHelper db = new DBHelper(getApplicationContext());
+                            db.updateFamilyMember(familyMember);
+                            familyMemberRecyclerView.getAdapter().notifyDataSetChanged();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+        }
     }
 
     /*

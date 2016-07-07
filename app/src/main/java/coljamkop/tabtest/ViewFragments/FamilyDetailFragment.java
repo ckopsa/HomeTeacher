@@ -352,5 +352,9 @@ public class FamilyDetailFragment extends Fragment {
         void onTrashFamilyButtonPress(FamilyContent.Family family);
 
         void onFamilyNameEdit(FamilyContent.Family family);
+
+        void onTrashFamilyMemberButtonPress(FamilyContent.FamilyMember familyMember);
+
+        void onFamilyMemberNameEdit(FamilyContent.FamilyMember familyMember);
     }
 }
