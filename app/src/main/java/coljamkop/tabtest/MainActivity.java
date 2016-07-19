@@ -109,9 +109,35 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onRemindButtonPress(FamilyContent.Family family) {
+    public void onRemindButtonPress(final FamilyContent.Family family) {
         String phoneNumber = family.getPhoneNumber();
-        if (family.getNextAppointment() != null && !phoneNumber.equals("")) {
+        if (phoneNumber.equals("")) {
+            final EditText input = new EditText(this);
+            input.setInputType(InputType.TYPE_CLASS_PHONE);
+            final DBHelper db = new DBHelper(getApplicationContext());
+            input.setHint("Phone Number");
+            new AlertDialog.Builder(this)
+                    .setTitle("Insert family phone number:")
+                    .setIcon(android.R.drawable.ic_input_add)
+                    .setView(input)
+                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String phoneNumber = input.getText().toString();
+                            if (!phoneNumber.equals("")) {
+                                family.setPhoneNumber(phoneNumber);
+                                db.updateFamily(family);
+                                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+                                if (recyclerView != null)
+                                    recyclerView.getAdapter().notifyDataSetChanged();
+                                onRemindButtonPress(family);
+                            }
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, null)
+                    .show();
+        }
+
+        if (family.getNextAppointment() != null) {
             String message = "Hey " + family.getFamilyName()
                     + "s! Just reminding you we have an appointment for "
                     + family.getNextAppointment().getDate()
@@ -129,8 +155,6 @@ public class MainActivity extends AppCompatActivity implements
                 Intent sendSMS = new Intent(Intent.ACTION_VIEW, number);
                 sendSMS.putExtra("sms_body", message);
                 startActivity(sendSMS);
-            } else {
-                Toast.makeText(getApplicationContext(), "No phone number to contact", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -161,14 +185,14 @@ public class MainActivity extends AppCompatActivity implements
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String familyName = ((EditText) view.findViewById(R.id.dialog_add_family_familyname)).getText().toString();
-                        String phoneNumber = ((EditText) view.findViewById(R.id.dialog_add_family_phonenumber)).getText().toString();
-                        String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
-                        String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
+//                        String phoneNumber = ((EditText) view.findViewById(R.id.dialog_add_family_phonenumber)).getText().toString();
+//                        String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
+//                        String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
                         if (!familyName.equals("")) {
                             FamilyContent.Family family = new FamilyContent.Family(familyName.trim());
-                            family.setPhoneNumber(phoneNumber.trim());
-                            family.setEmailAddress(emailAddress.trim());
-                            family.setPostalAddress(postalAddress.trim());
+                            family.setPhoneNumber("");
+                            family.setEmailAddress("");
+                            family.setPostalAddress("");
                             FamilyContent.addFamily(family);
                             DBHelper db = new DBHelper(getApplicationContext());
                             db.putFamily(family);
@@ -623,8 +647,8 @@ public class MainActivity extends AppCompatActivity implements
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-            //TODO: For demo set after 5 seconds.
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 1000, pendingIntent);
+            // 24 hours after application is closed
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000, pendingIntent);
         }
     }
 }

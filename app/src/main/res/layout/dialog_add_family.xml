@@ -15,36 +15,36 @@
         android:hint="Family Name"
         android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/dialog_add_family_phonenumber"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="16dp"
-        android:hint="Phone Number"
-        android:inputType="phone" />
+    <!--<EditText-->
+        <!--android:id="@+id/dialog_add_family_phonenumber"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--android:layout_marginLeft="4dp"-->
+        <!--android:layout_marginRight="4dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:hint="Phone Number (Optional)"-->
+        <!--android:inputType="phone" />-->
 
-    <EditText
-        android:id="@+id/dialog_add_family_email_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="16dp"
-        android:hint="Email Address"
-        android:inputType="textEmailAddress" />
+    <!--<EditText-->
+        <!--android:id="@+id/dialog_add_family_email_address"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--android:layout_marginLeft="4dp"-->
+        <!--android:layout_marginRight="4dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:hint="Email Address (Optional)"-->
+        <!--android:inputType="textEmailAddress" />-->
 
-    <EditText
-        android:id="@+id/dialog_add_family_postal_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="16dp"
-        android:hint="Postal Address"
-        android:inputType="textPostalAddress" />
+    <!--<EditText-->
+        <!--android:id="@+id/dialog_add_family_postal_address"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--android:layout_marginLeft="4dp"-->
+        <!--android:layout_marginRight="4dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:hint="Postal Address (Optional) "-->
+        <!--android:inputType="textPostalAddress" />-->
 </LinearLayout>

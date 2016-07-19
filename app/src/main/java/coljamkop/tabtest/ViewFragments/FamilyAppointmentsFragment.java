@@ -60,11 +60,6 @@ public class FamilyAppointmentsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_family_appointment_list, container, false);
 
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.family_appointment_toolbar_layout);
-        if (appBarLayout != null) {
-            appBarLayout.setTitle(family.getFamilyName() + " Family");
-        }
-
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.family_appointment_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

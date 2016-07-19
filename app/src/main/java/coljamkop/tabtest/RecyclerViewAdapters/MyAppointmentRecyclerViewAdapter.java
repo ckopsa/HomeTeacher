@@ -91,12 +91,12 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
                 mListener.onRemindButtonPress(holder.mItem);
             }
         });
-        holder.mListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onListButtonPress(holder.mItem);
-            }
-        });
+//        holder.mListButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mListener.onListButtonPress(holder.mItem);
+//            }
+//        });
     }
 
     @Override
@@ -111,7 +111,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
         public final TextView mFamilyNameView;
         public final ImageButton mCheckBox;
         public final TextView mNoAppointment;
-        public final ImageButton mListButton;
+//        public final ImageButton mListButton;
         public final ImageButton mReminderButton;
 
         public Family mItem;
@@ -124,7 +124,7 @@ public class MyAppointmentRecyclerViewAdapter extends RecyclerView.Adapter<MyApp
             mNoAppointment = (TextView) view.findViewById(R.id.appointment_none);
             mFamilyNameView = (TextView) view.findViewById(R.id.appointment_family);
             mCheckBox = (ImageButton) view.findViewById(R.id.appointment_checkbox_button);
-            mListButton = (ImageButton) view.findViewById(R.id.appointment_list_button);
+//            mListButton = (ImageButton) view.findViewById(R.id.appointment_list_button);
             mReminderButton = (ImageButton) view.findViewById(R.id.appointment_reminder_button);
         }
 
