@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.0.0"
 
     defaultConfig {
-        applicationId "coljamkop.tabtest"
+        applicationId "coljamkop.home_teacher"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
