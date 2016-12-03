@@ -1,17 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="coljamkop.tabtest.MainActivity">
+    tools:context="coljamkop.tabtest.FamilyDetailView">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        android:onClick="onSettingsSelect"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_send_report"
-        android:orderInCategory="100"
-        android:title="@string/send_report"
-        android:onClick="onSendReportOptionSelect"
         app:showAsAction="never" />
 </menu>

@@ -39,7 +39,8 @@ import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
 public class MainActivity extends AppCompatActivity implements
         AppointmentViewFragment.OnAppointmentListFragmentInteractionListener,
         FamilyDetailFragment.OnFamilyDetailFragmentInteractionListener,
-        FamilyAppointmentsFragment.OnFamilyAppointmentListFragmentInteractionListener {
+        FamilyAppointmentsFragment.OnFamilyAppointmentListFragmentInteractionListener,
+        SettingsFragment.OnSettingsFragmentInteractionListener {
 
     /*
      * AppointmentView Interfaces
@@ -63,17 +64,14 @@ public class MainActivity extends AppCompatActivity implements
         final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.appointmentlist));
 
         final FamilyContent.Appointment appointment = family.getNextAppointment();
-        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if (view.isShown()) {
-                    appointment.setHour(hourOfDay);
-                    appointment.setMinute(minute);
-                    Log.d("onTimeChanged", "time changed");
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                    DBHelper db = new DBHelper(getApplicationContext());
-                    db.updateAppointment(appointment);
-                }
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay, minute) -> {
+            if (view.isShown()) {
+                appointment.setHour(hourOfDay);
+                appointment.setMinute(minute);
+                Log.d("onTimeChanged", "time changed");
+                recyclerView.getAdapter().notifyDataSetChanged();
+                DBHelper db = new DBHelper(getApplicationContext());
+                db.updateAppointment(appointment);
             }
         };
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener,
@@ -86,18 +84,15 @@ public class MainActivity extends AppCompatActivity implements
     public void onAppointmentDateClick(final FamilyContent.Family family) {
         final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.appointmentlist));
         final FamilyContent.Appointment appointment = family.getNextAppointment();
-        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                if (view.isShown()) {
-                    appointment.setYear(year);
-                    appointment.setMonth(1 + monthOfYear);
-                    appointment.setDay(dayOfMonth);
-                    Log.d("onDateChanged", "date changed");
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                    DBHelper db = new DBHelper(getApplicationContext());
-                    db.updateAppointment(appointment);
-                }
+        DatePickerDialog.OnDateSetListener onDateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
+            if (view.isShown()) {
+                appointment.setYear(year);
+                appointment.setMonth(1 + monthOfYear);
+                appointment.setDay(dayOfMonth);
+                Log.d("onDateChanged", "date changed");
+                recyclerView.getAdapter().notifyDataSetChanged();
+                DBHelper db = new DBHelper(getApplicationContext());
+                db.updateAppointment(appointment);
             }
         };
         DatePickerDialog datePickerFragment = new DatePickerDialog(this,
@@ -120,17 +115,15 @@ public class MainActivity extends AppCompatActivity implements
                     .setTitle("Insert family phone number:")
                     .setIcon(android.R.drawable.ic_input_add)
                     .setView(input)
-                    .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            String phoneNumber = input.getText().toString();
-                            if (!phoneNumber.equals("")) {
-                                family.setPhoneNumber(phoneNumber);
-                                db.updateFamily(family);
-                                RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
-                                if (recyclerView != null)
-                                    recyclerView.getAdapter().notifyDataSetChanged();
-                                onRemindButtonPress(family);
-                            }
+                    .setPositiveButton("Add", (dialog, whichButton) -> {
+                        String phoneNumber1 = input.getText().toString();
+                        if (!phoneNumber1.equals("")) {
+                            family.setPhoneNumber(phoneNumber1);
+                            db.updateFamily(family);
+                            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+                            if (recyclerView != null)
+                                recyclerView.getAdapter().notifyDataSetChanged();
+                            onRemindButtonPress(family);
                         }
                     })
                     .setNegativeButton(android.R.string.no, null)
@@ -182,24 +175,22 @@ public class MainActivity extends AppCompatActivity implements
                 .setTitle("Add a family:")
                 .setIcon(android.R.drawable.ic_input_add)
                 .setView(view)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String familyName = ((EditText) view.findViewById(R.id.dialog_add_family_familyname)).getText().toString();
+                .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                    String familyName = ((EditText) view.findViewById(R.id.dialog_add_family_familyname)).getText().toString();
 //                        String phoneNumber = ((EditText) view.findViewById(R.id.dialog_add_family_phonenumber)).getText().toString();
 //                        String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
 //                        String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
-                        if (!familyName.equals("")) {
-                            FamilyContent.Family family = new FamilyContent.Family(familyName.trim());
-                            family.setPhoneNumber("");
-                            family.setEmailAddress("");
-                            family.setPostalAddress("");
-                            FamilyContent.addFamily(family);
-                            DBHelper db = new DBHelper(getApplicationContext());
-                            db.putFamily(family);
-                            appointmentList.getAdapter().notifyDataSetChanged();
-                        }
-
+                    if (!familyName.equals("")) {
+                        FamilyContent.Family family = new FamilyContent.Family(familyName.trim());
+                        family.setPhoneNumber("");
+                        family.setEmailAddress("");
+                        family.setPostalAddress("");
+                        FamilyContent.addFamily(family);
+                        DBHelper db = new DBHelper(getApplicationContext());
+                        db.putFamily(family);
+                        appointmentList.getAdapter().notifyDataSetChanged();
                     }
+
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
@@ -235,33 +226,27 @@ public class MainActivity extends AppCompatActivity implements
             int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
             int minute = c.get(Calendar.MINUTE);
 
-            TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    if (view.isShown()) {
-                        appointment.setHour(hourOfDay);
-                        appointment.setMinute(minute);
-                        Log.d("onTimeChanged", "time changed");
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        family.addAppointment(appointment);
-                        db.updateAppointment(appointment);
-                    }
+            TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay1, minute1) -> {
+                if (view.isShown()) {
+                    appointment.setHour(hourOfDay1);
+                    appointment.setMinute(minute1);
+                    Log.d("onTimeChanged", "time changed");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    family.addAppointment(appointment);
+                    db.updateAppointment(appointment);
                 }
             };
             TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener, hourOfDay, minute, false);
             timePickerDialog.show();
 
-            DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    if (view.isShown()) {
-                        appointment.setYear(year);
-                        appointment.setMonth(1 + monthOfYear);
-                        appointment.setDay(dayOfMonth);
-                        Log.d("onDateChanged", "date changed");
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        db.putAppointment(appointment);
-                    }
+            DatePickerDialog.OnDateSetListener onDateSetListener = (view, year1, monthOfYear, dayOfMonth) -> {
+                if (view.isShown()) {
+                    appointment.setYear(year1);
+                    appointment.setMonth(1 + monthOfYear);
+                    appointment.setDay(dayOfMonth);
+                    Log.d("onDateChanged", "date changed");
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    db.putAppointment(appointment);
                 }
             };
             DatePickerDialog datePickerFragment = new DatePickerDialog(this, onDateSetListener, year, month, day);
@@ -317,23 +302,21 @@ public class MainActivity extends AppCompatActivity implements
                 .setTitle("Add a family member:")
                 .setIcon(android.R.drawable.ic_input_add)
                 .setView(input)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String firstName = input.getText().toString();
-                        if (!firstName.equals("")) {
-                            FamilyContent.FamilyMember familyMember =
-                                    new FamilyContent.FamilyMember(
-                                            firstName,
-                                            Integer.parseInt(family.getID()),
-                                            null,
-                                            null,
-                                            null);
-                            family.addMember(familyMember);
-                            db.putFamilyMember(familyMember);
-                            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
-                            if (recyclerView != null)
-                                recyclerView.getAdapter().notifyDataSetChanged();
-                        }
+                .setPositiveButton("Add", (dialog, whichButton) -> {
+                    String firstName = input.getText().toString();
+                    if (!firstName.equals("")) {
+                        FamilyContent.FamilyMember familyMember =
+                                new FamilyContent.FamilyMember(
+                                        firstName,
+                                        Integer.parseInt(family.getID()),
+                                        null,
+                                        null,
+                                        null);
+                        family.addMember(familyMember);
+                        db.putFamilyMember(familyMember);
+                        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+                        if (recyclerView != null)
+                            recyclerView.getAdapter().notifyDataSetChanged();
                     }
                 })
                 .setNegativeButton(android.R.string.no, null)
@@ -348,14 +331,12 @@ public class MainActivity extends AppCompatActivity implements
                 .setTitle("Delete Family")
                 .setMessage("Do you really want to delete the " + family.getFamilyName() + " family?")
                 .setIcon(android.R.drawable.ic_menu_delete)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        FamilyContent.removeFamily(family);
-                        DBHelper db = new DBHelper(getApplicationContext());
-                        db.deleteFamily(family);
-                        appointmentRecyclerView.getAdapter().notifyDataSetChanged();
-                        getSupportFragmentManager().popBackStack();
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    FamilyContent.removeFamily(family);
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.deleteFamily(family);
+                    appointmentRecyclerView.getAdapter().notifyDataSetChanged();
+                    getSupportFragmentManager().popBackStack();
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -374,13 +355,11 @@ public class MainActivity extends AppCompatActivity implements
                 .setMessage("Do you really want to remove " + familyMember.getName() +
                         " from the " + family.getFamilyName() + " family?")
                 .setIcon(android.R.drawable.ic_menu_delete)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        DBHelper db = new DBHelper(getApplicationContext());
-                        db.deleteFamilyMember(familyMember);
-                        family.removeFamilyMember(familyMember);
-                        familyMemberRecyclerView.getAdapter().notifyDataSetChanged();
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.deleteFamilyMember(familyMember);
+                    family.removeFamilyMember(familyMember);
+                    familyMemberRecyclerView.getAdapter().notifyDataSetChanged();
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -398,14 +377,12 @@ public class MainActivity extends AppCompatActivity implements
                     .setTitle(title)
                     .setIcon(android.R.drawable.ic_menu_edit)
                     .setView(input)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            String text = input.getText().toString();
-                            familyMember.setName(text.trim());
-                            DBHelper db = new DBHelper(getApplicationContext());
-                            db.updateFamilyMember(familyMember);
-                            familyMemberRecyclerView.getAdapter().notifyDataSetChanged();
-                        }
+                    .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                        String text = input.getText().toString();
+                        familyMember.setName(text.trim());
+                        DBHelper db = new DBHelper(getApplicationContext());
+                        db.updateFamilyMember(familyMember);
+                        familyMemberRecyclerView.getAdapter().notifyDataSetChanged();
                     })
                     .setNegativeButton(android.R.string.no, null)
                     .show();
@@ -438,17 +415,15 @@ public class MainActivity extends AppCompatActivity implements
                 .setTitle("Delete Appointment")
                 .setMessage("Do you really want to delete this appointment?")
                 .setIcon(android.R.drawable.ic_menu_delete)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        FamilyContent.getFamily(appointment.getFamilyID()).deleteAppointment(appointment);
-                        DBHelper db = new DBHelper(getApplicationContext());
-                        db.deleteAppointment(appointment);
-                        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_appointment_list);
-                        recyclerView.getAdapter().notifyDataSetChanged();
-                        recyclerViewMain.getAdapter().notifyDataSetChanged();
-                        if (FamilyContent.getFamily(appointment.getFamilyID()).getAppointmentList().isEmpty())
-                            getSupportFragmentManager().popBackStack();
-                    }
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    FamilyContent.getFamily(appointment.getFamilyID()).deleteAppointment(appointment);
+                    DBHelper db = new DBHelper(getApplicationContext());
+                    db.deleteAppointment(appointment);
+                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_appointment_list);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                    recyclerViewMain.getAdapter().notifyDataSetChanged();
+                    if (FamilyContent.getFamily(appointment.getFamilyID()).getAppointmentList().isEmpty())
+                        getSupportFragmentManager().popBackStack();
                 })
                 .setNegativeButton(android.R.string.no, null).show();
     }
@@ -457,19 +432,16 @@ public class MainActivity extends AppCompatActivity implements
     public void onFamilyAppointmentDateClick(final FamilyContent.Appointment appointment) {
         final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.family_appointment_list));
         final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
-        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                if (view.isShown()) {
-                    appointment.setYear(year);
-                    appointment.setMonth(1 + monthOfYear);
-                    appointment.setDay(dayOfMonth);
-                    Log.d("onDateChanged", "date changed");
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                    recyclerViewMain.getAdapter().notifyDataSetChanged();
-                    DBHelper db = new DBHelper(getApplicationContext());
-                    db.updateAppointment(appointment);
-                }
+        DatePickerDialog.OnDateSetListener onDateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
+            if (view.isShown()) {
+                appointment.setYear(year);
+                appointment.setMonth(1 + monthOfYear);
+                appointment.setDay(dayOfMonth);
+                Log.d("onDateChanged", "date changed");
+                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerViewMain.getAdapter().notifyDataSetChanged();
+                DBHelper db = new DBHelper(getApplicationContext());
+                db.updateAppointment(appointment);
             }
         };
         DatePickerDialog datePickerFragment = new DatePickerDialog(this,
@@ -485,18 +457,15 @@ public class MainActivity extends AppCompatActivity implements
         final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.family_appointment_list));
         final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
 
-        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if (view.isShown()) {
-                    appointment.setHour(hourOfDay);
-                    appointment.setMinute(minute);
-                    Log.d("onTimeChanged", "time changed");
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                    recyclerViewMain.getAdapter().notifyDataSetChanged();
-                    DBHelper db = new DBHelper(getApplicationContext());
-                    db.updateAppointment(appointment);
-                }
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay, minute) -> {
+            if (view.isShown()) {
+                appointment.setHour(hourOfDay);
+                appointment.setMinute(minute);
+                Log.d("onTimeChanged", "time changed");
+                recyclerView.getAdapter().notifyDataSetChanged();
+                recyclerViewMain.getAdapter().notifyDataSetChanged();
+                DBHelper db = new DBHelper(getApplicationContext());
+                db.updateAppointment(appointment);
             }
         };
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener,
@@ -522,33 +491,27 @@ public class MainActivity extends AppCompatActivity implements
         int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
 
-        DatePickerDialog.OnDateSetListener onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                if (view.isShown()) {
-                    appointment.setYear(year);
-                    appointment.setMonth(1 + monthOfYear);
-                    appointment.setDay(dayOfMonth);
-                    Log.d("onDateChanged", "date changed");
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                    db.putAppointment(appointment);
-                }
+        DatePickerDialog.OnDateSetListener onDateSetListener = (view, year1, monthOfYear, dayOfMonth) -> {
+            if (view.isShown()) {
+                appointment.setYear(year1);
+                appointment.setMonth(1 + monthOfYear);
+                appointment.setDay(dayOfMonth);
+                Log.d("onDateChanged", "date changed");
+                recyclerView.getAdapter().notifyDataSetChanged();
+                db.putAppointment(appointment);
             }
         };
         DatePickerDialog datePickerFragment = new DatePickerDialog(this, onDateSetListener, year, month, day);
         datePickerFragment.show();
 
-        TimePickerDialog.OnTimeSetListener onTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                if (view.isShown()) {
-                    appointment.setHour(hourOfDay);
-                    appointment.setMinute(minute);
-                    Log.d("onTimeChanged", "time changed");
-                    recyclerView.getAdapter().notifyDataSetChanged();
-                    family.addAppointment(appointment);
-                    db.updateAppointment(appointment);
-                }
+        TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay1, minute1) -> {
+            if (view.isShown()) {
+                appointment.setHour(hourOfDay1);
+                appointment.setMinute(minute1);
+                Log.d("onTimeChanged", "time changed");
+                recyclerView.getAdapter().notifyDataSetChanged();
+                family.addAppointment(appointment);
+                db.updateAppointment(appointment);
             }
         };
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, onTimeSetListener, hourOfDay, minute, false);
@@ -574,10 +537,11 @@ public class MainActivity extends AppCompatActivity implements
         if (FamilyContent.FAMILIES.isEmpty()) {
             DBHelper db = new DBHelper(this);
             if (DBHelper.doesDatabaseExist(this)) {
-                for (FamilyContent.Family family :
-                        db.getFamilyList()) {
+                for (FamilyContent.Family family:
+                db.getFamilyList()) {
                     FamilyContent.addFamily(family);
                 }
+
             }
         }
     }
@@ -651,6 +615,17 @@ public class MainActivity extends AppCompatActivity implements
             // 24 hours after application is closed
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000, pendingIntent);
         }
+    }
+
+    public void onSettingsSelect(MenuItem item) {
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, SettingsFragment.newInstance("what's", "up")).commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
 
