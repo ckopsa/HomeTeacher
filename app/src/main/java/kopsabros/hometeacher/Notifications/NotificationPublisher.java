@@ -15,7 +15,7 @@ import kopsabros.hometeacher.R;
 public class NotificationPublisher {
 
     public void sendNotification(Context context) {
-        String title = "Reminder";
+        String title = "Home Teaching Reminder";
         String message = "One or more families need appointments set";
         int mNotificationId = 001;
 

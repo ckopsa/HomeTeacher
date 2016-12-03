@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -589,13 +590,15 @@ public class MainActivity extends AppCompatActivity implements
     public void scheduleCheckAlarm() {
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
 
         // every 24 hours
+        // TODO: change from 5 seconds before release
         alarmManager.setInexactRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000,
-                SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000,
+                SystemClock.elapsedRealtime() + 5000, //24 * 60 * 60 * 1000,
+                5000,  //24 * 60 * 60 * 1000,
                 pendingIntent
         );
     }
