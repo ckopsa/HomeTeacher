@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package kopsabros.hometeacher;
 
 import org.junit.Test;
 

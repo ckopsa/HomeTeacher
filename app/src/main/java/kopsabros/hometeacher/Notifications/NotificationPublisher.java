@@ -1,4 +1,4 @@
-package coljamkop.tabtest.Notifications;
+package kopsabros.hometeacher.Notifications;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
-import coljamkop.tabtest.MainActivity;
-import coljamkop.tabtest.R;
+import kopsabros.hometeacher.MainActivity;
+import kopsabros.hometeacher.R;
 
 /**
  * Created by Aghbac on 6/20/16.

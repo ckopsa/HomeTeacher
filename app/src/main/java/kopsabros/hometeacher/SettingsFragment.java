@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package kopsabros.hometeacher;
 
 import android.content.Context;
 import android.net.Uri;
@@ -65,7 +65,7 @@ public class SettingsFragment extends PreferenceFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        return inflater.inflate(kopsabros.hometeacher.R.layout.fragment_settings, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

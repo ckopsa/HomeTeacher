@@ -1,10 +1,10 @@
-package coljamkop.tabtest.Notifications;
+package kopsabros.hometeacher.Notifications;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import coljamkop.tabtest.Content.FamilyContent;
+import kopsabros.hometeacher.Content.FamilyContent;
 
 public class AlarmReceiver extends BroadcastReceiver {
     public AlarmReceiver() {

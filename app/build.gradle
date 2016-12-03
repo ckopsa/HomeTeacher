@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.2"
 
     defaultConfig {
-        applicationId "coljamkop.home_teacher"
+        applicationId "kopsabros.home_teacher"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1

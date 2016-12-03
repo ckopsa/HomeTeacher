@@ -1,4 +1,4 @@
-package coljamkop.tabtest;
+package kopsabros.hometeacher;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -25,12 +25,12 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-import coljamkop.tabtest.Content.FamilyContent;
-import coljamkop.tabtest.Database.DBHelper;
-import coljamkop.tabtest.Notifications.AlarmReceiver;
-import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
-import coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment;
-import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
+import kopsabros.hometeacher.Content.FamilyContent;
+import kopsabros.hometeacher.Database.DBHelper;
+import kopsabros.hometeacher.Notifications.AlarmReceiver;
+import kopsabros.hometeacher.ViewFragments.AppointmentViewFragment;
+import kopsabros.hometeacher.ViewFragments.FamilyAppointmentsFragment;
+import kopsabros.hometeacher.ViewFragments.FamilyDetailFragment;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -51,14 +51,14 @@ public class MainActivity extends AppCompatActivity implements
                 Toast.makeText(getBaseContext(), "Appointment Completed", Toast.LENGTH_SHORT).show();
             DBHelper db = new DBHelper(getApplicationContext());
             db.updateAppointment(appointment);
-            final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.appointmentlist));
+            final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist));
             recyclerView.getAdapter().notifyDataSetChanged();
         }
     }
 
     @Override
     public void onAppointmentTimeClick(final FamilyContent.Family family) {
-        final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.appointmentlist));
+        final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist));
 
         final FamilyContent.Appointment appointment = family.getNextAppointment();
         TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay, minute) -> {
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAppointmentDateClick(final FamilyContent.Family family) {
-        final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.appointmentlist));
+        final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist));
         final FamilyContent.Appointment appointment = family.getNextAppointment();
         DatePickerDialog.OnDateSetListener onDateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
             if (view.isShown()) {
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements
                         if (!phoneNumber1.equals("")) {
                             family.setPhoneNumber(phoneNumber1);
                             db.updateFamily(family);
-                            RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+                            RecyclerView recyclerView = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_member_list);
                             if (recyclerView != null)
                                 recyclerView.getAdapter().notifyDataSetChanged();
                             onRemindButtonPress(family);
@@ -164,16 +164,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onAppointmentAddFamily() {
-        final View view = getLayoutInflater().inflate(R.layout.dialog_add_family, null);
+        final View view = getLayoutInflater().inflate(kopsabros.hometeacher.R.layout.dialog_add_family, null);
 
-        final RecyclerView appointmentList = (RecyclerView) findViewById(R.id.appointmentlist);
+        final RecyclerView appointmentList = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist);
 
         new AlertDialog.Builder(this)
                 .setTitle("Add a family:")
                 .setIcon(android.R.drawable.ic_input_add)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
-                    String familyName = ((EditText) view.findViewById(R.id.dialog_add_family_familyname)).getText().toString();
+                    String familyName = ((EditText) view.findViewById(kopsabros.hometeacher.R.id.dialog_add_family_familyname)).getText().toString();
 //                        String phoneNumber = ((EditText) view.findViewById(R.id.dialog_add_family_phonenumber)).getText().toString();
 //                        String emailAddress = ((EditText) view.findViewById(R.id.dialog_add_family_email_address)).getText().toString();
 //                        String postalAddress = ((EditText) view.findViewById(R.id.dialog_add_family_postal_address)).getText().toString();
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onAppointmentListFragmentInteraction(final FamilyContent.Family family) {
         if (family.getNextAppointment() == null) {
-            final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.appointmentlist));
+            final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
             if (prev != null) {
@@ -311,19 +311,19 @@ public class MainActivity extends AppCompatActivity implements
                                         null);
                         family.addMember(familyMember);
                         db.putFamilyMember(familyMember);
-                        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+                        RecyclerView recyclerView = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_member_list);
                         if (recyclerView != null)
                             recyclerView.getAdapter().notifyDataSetChanged();
                     }
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
-        findViewById(R.id.detail_family_title).setVisibility(View.VISIBLE);
+        findViewById(kopsabros.hometeacher.R.id.detail_family_title).setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onTrashFamilyButtonPress(final FamilyContent.Family family) {
-        final RecyclerView appointmentRecyclerView = (RecyclerView) findViewById(R.id.appointmentlist);
+        final RecyclerView appointmentRecyclerView = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist);
         new AlertDialog.Builder(this)
                 .setTitle("Delete Family")
                 .setMessage("Do you really want to delete the " + family.getFamilyName() + " family?")
@@ -340,13 +340,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFamilyNameEdit(FamilyContent.Family family) {
-        ((RecyclerView) findViewById(R.id.appointmentlist)).getAdapter().notifyDataSetChanged();
+        ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist)).getAdapter().notifyDataSetChanged();
     }
 
     @Override
     public void onTrashFamilyMemberButtonPress(final FamilyContent.FamilyMember familyMember) {
         final FamilyContent.Family family = FamilyContent.getFamily(familyMember.getFamilyID());
-        final RecyclerView familyMemberRecyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+        final RecyclerView familyMemberRecyclerView = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_member_list);
         new AlertDialog.Builder(this)
                 .setTitle("Delete Family Member")
                 .setMessage("Do you really want to remove " + familyMember.getName() +
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFamilyMemberNameEdit(final FamilyContent.FamilyMember familyMember) {
-        final RecyclerView familyMemberRecyclerView = (RecyclerView) findViewById(R.id.family_member_list);
+        final RecyclerView familyMemberRecyclerView = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_member_list);
         String title;
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
@@ -397,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFamilyAppointmentListCheckBoxInteraction(FamilyContent.Appointment appointment, CheckBox checkBox) {
-        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
+        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist);
         recyclerViewMain.getAdapter().notifyDataSetChanged();
         if (appointment.getCompleted())
             Toast.makeText(getBaseContext(), "Appointment Completed", Toast.LENGTH_SHORT).show();
@@ -407,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTrashButtonPress(final FamilyContent.Appointment appointment) {
-        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
+        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist);
         new AlertDialog.Builder(this)
                 .setTitle("Delete Appointment")
                 .setMessage("Do you really want to delete this appointment?")
@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements
                     FamilyContent.getFamily(appointment.getFamilyID()).deleteAppointment(appointment);
                     DBHelper db = new DBHelper(getApplicationContext());
                     db.deleteAppointment(appointment);
-                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.family_appointment_list);
+                    RecyclerView recyclerView = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_appointment_list);
                     recyclerView.getAdapter().notifyDataSetChanged();
                     recyclerViewMain.getAdapter().notifyDataSetChanged();
                     if (FamilyContent.getFamily(appointment.getFamilyID()).getAppointmentList().isEmpty())
@@ -427,8 +427,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFamilyAppointmentDateClick(final FamilyContent.Appointment appointment) {
-        final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.family_appointment_list));
-        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
+        final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_appointment_list));
+        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist);
         DatePickerDialog.OnDateSetListener onDateSetListener = (view, year, monthOfYear, dayOfMonth) -> {
             if (view.isShown()) {
                 appointment.setYear(year);
@@ -451,8 +451,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFamilyAppointmentTimeClick(final FamilyContent.Appointment appointment) {
-        final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.family_appointment_list));
-        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(R.id.appointmentlist);
+        final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_appointment_list));
+        final RecyclerView recyclerViewMain = (RecyclerView) findViewById(kopsabros.hometeacher.R.id.appointmentlist);
 
         TimePickerDialog.OnTimeSetListener onTimeSetListener = (view, hourOfDay, minute) -> {
             if (view.isShown()) {
@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFamilyAppointmentAddAppointment(final FamilyContent.Family family) {
-        final RecyclerView recyclerView = ((RecyclerView) findViewById(R.id.family_appointment_list));
+        final RecyclerView recyclerView = ((RecyclerView) findViewById(kopsabros.hometeacher.R.id.family_appointment_list));
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = (getSupportFragmentManager().findFragmentByTag("dialog"));
         if (prev != null) {
@@ -522,13 +522,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(kopsabros.hometeacher.R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(kopsabros.hometeacher.R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.frag_container, AppointmentViewFragment.newInstance(1));
+        ft.add(kopsabros.hometeacher.R.id.frag_container, AppointmentViewFragment.newInstance(1));
         ft.commit();
 
         if (FamilyContent.FAMILIES.isEmpty()) {
@@ -541,12 +541,14 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         }
+
+        scheduleCheckAlarm();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(kopsabros.hometeacher.R.menu.menu_main, menu);
         return true;
     }
 
@@ -563,12 +565,6 @@ public class MainActivity extends AppCompatActivity implements
 //        }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        scheduleCheckAlarm();
     }
 
     public void onSendReportOptionSelect(MenuItem item) {

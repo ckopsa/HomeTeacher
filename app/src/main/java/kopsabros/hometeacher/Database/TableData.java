@@ -1,4 +1,4 @@
-package coljamkop.tabtest.Database;
+package kopsabros.hometeacher.Database;
 
 import android.provider.BaseColumns;
 

@@ -1,4 +1,4 @@
-package coljamkop.tabtest.RecyclerViewAdapters;
+package kopsabros.hometeacher.RecyclerViewAdapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import coljamkop.tabtest.Content.FamilyContent;
-import coljamkop.tabtest.R;
-import coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment;
+import kopsabros.hometeacher.Content.FamilyContent;
+import kopsabros.hometeacher.R;
+import kopsabros.hometeacher.ViewFragments.FamilyAppointmentsFragment;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link coljamkop.tabtest.Content.FamilyContent.Appointment} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link kopsabros.hometeacher.Content.FamilyContent.Appointment} and makes a call to the
  * specified {@link FamilyAppointmentsFragment.OnFamilyAppointmentListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */

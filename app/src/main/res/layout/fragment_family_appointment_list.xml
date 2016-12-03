@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:context="coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment"
+        tools:context="kopsabros.hometeacher.ViewFragments.FamilyAppointmentsFragment"
         tools:listitem="@layout/fragment_family_appointment" />
 
     <android.support.design.widget.FloatingActionButton

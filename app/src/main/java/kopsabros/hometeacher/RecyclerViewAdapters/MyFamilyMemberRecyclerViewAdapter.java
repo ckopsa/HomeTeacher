@@ -1,4 +1,4 @@
-package coljamkop.tabtest.RecyclerViewAdapters;
+package kopsabros.hometeacher.RecyclerViewAdapters;
 
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -9,13 +9,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import coljamkop.tabtest.Content.FamilyContent;
-import coljamkop.tabtest.Content.FamilyContent.Family;
-import coljamkop.tabtest.R;
-import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
+import kopsabros.hometeacher.Content.FamilyContent;
+import kopsabros.hometeacher.Content.FamilyContent.Family;
+import kopsabros.hometeacher.R;
+import kopsabros.hometeacher.ViewFragments.FamilyDetailFragment;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Family} and makes a call to the

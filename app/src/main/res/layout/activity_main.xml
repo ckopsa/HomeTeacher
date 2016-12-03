@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     android:fitsSystemWindows="true"
-    tools:context="coljamkop.tabtest.MainActivity">
+    tools:context="kopsabros.hometeacher.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

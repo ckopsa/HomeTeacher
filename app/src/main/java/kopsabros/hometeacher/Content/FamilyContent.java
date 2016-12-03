@@ -1,4 +1,4 @@
-package coljamkop.tabtest.Content;
+package kopsabros.hometeacher.Content;
 
 import android.support.annotation.Nullable;
 

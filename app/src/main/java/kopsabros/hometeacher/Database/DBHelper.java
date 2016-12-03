@@ -1,4 +1,4 @@
-package coljamkop.tabtest.Database;
+package kopsabros.hometeacher.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,11 +11,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import coljamkop.tabtest.Content.FamilyContent;
+import kopsabros.hometeacher.Content.FamilyContent;
 
-import static coljamkop.tabtest.Database.TableData.AppointmentInfo;
-import static coljamkop.tabtest.Database.TableData.FamilyInfo;
-import static coljamkop.tabtest.Database.TableData.FamilyMemberInfo;
+import static kopsabros.hometeacher.Database.TableData.AppointmentInfo;
+import static kopsabros.hometeacher.Database.TableData.FamilyInfo;
+import static kopsabros.hometeacher.Database.TableData.FamilyMemberInfo;
 
 /**
  * Created by Aghbac on 6/20/16.

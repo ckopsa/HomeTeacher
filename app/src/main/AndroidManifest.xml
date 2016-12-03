@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="coljamkop.tabtest">
+    package="kopsabros.hometeacher">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".Notifications.AlarmReceiver"
+            android:name="kopsabros.hometeacher.Notifications.AlarmReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.NOTIFY" />
@@ -17,7 +17,7 @@
         </receiver>
 
         <activity
-            android:name=".MainActivity"
+            android:name="kopsabros.hometeacher.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">

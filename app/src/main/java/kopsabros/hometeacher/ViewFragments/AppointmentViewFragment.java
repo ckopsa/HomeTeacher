@@ -1,23 +1,19 @@
-package coljamkop.tabtest.ViewFragments;
+package kopsabros.hometeacher.ViewFragments;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.CheckBox;
 
-import coljamkop.tabtest.Content.FamilyContent;
-import coljamkop.tabtest.R;
-import coljamkop.tabtest.RecyclerViewAdapters.MyAppointmentRecyclerViewAdapter;
+import kopsabros.hometeacher.R;
+import kopsabros.hometeacher.RecyclerViewAdapters.MyAppointmentRecyclerViewAdapter;
 
-import static coljamkop.tabtest.Content.FamilyContent.*;
+import static kopsabros.hometeacher.Content.FamilyContent.*;
 
 /**
  * A fragment representing a list of Items.
