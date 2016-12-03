@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,16 +20,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
 
 import coljamkop.tabtest.Content.FamilyContent;
 import coljamkop.tabtest.Database.DBHelper;
-import coljamkop.tabtest.Notifications.NotificationPublisher;
+import coljamkop.tabtest.Notifications.AlarmReceiver;
 import coljamkop.tabtest.ViewFragments.AppointmentViewFragment;
 import coljamkop.tabtest.ViewFragments.FamilyAppointmentsFragment;
 import coljamkop.tabtest.ViewFragments.FamilyDetailFragment;
@@ -537,8 +534,8 @@ public class MainActivity extends AppCompatActivity implements
         if (FamilyContent.FAMILIES.isEmpty()) {
             DBHelper db = new DBHelper(this);
             if (DBHelper.doesDatabaseExist(this)) {
-                for (FamilyContent.Family family:
-                db.getFamilyList()) {
+                for (FamilyContent.Family family :
+                        db.getFamilyList()) {
                     FamilyContent.addFamily(family);
                 }
 
@@ -571,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        sendNotification();
+        scheduleCheckAlarm();
     }
 
     public void onSendReportOptionSelect(MenuItem item) {
@@ -593,28 +590,18 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
-    public void sendNotification() {
-        String unappointedFamilies = "";
-        boolean isReminderableFamily = false;
-        for (FamilyContent.Family family :
-                FamilyContent.FAMILIES) {
-            if (family.getNextAppointment() == null) {
-                isReminderableFamily = true;
-                unappointedFamilies += "The " + family.getFamilyName() + " family\n";
-            }
-        }
-        if (isReminderableFamily) {
-            Log.d("Notification", " is good");
-            Intent alarmIntent = new Intent(this, NotificationPublisher.class);
-            alarmIntent.putExtra("message", unappointedFamilies);
-            alarmIntent.putExtra("title", "Reminder to contact: ");
+    public void scheduleCheckAlarm() {
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-            // 24 hours after application is closed
-            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000, pendingIntent);
-        }
+        // every 24 hours
+        alarmManager.setInexactRepeating(
+                AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000,
+                SystemClock.elapsedRealtime() + 24 * 60 * 60 * 1000,
+                pendingIntent
+        );
     }
 
     public void onSettingsSelect(MenuItem item) {
