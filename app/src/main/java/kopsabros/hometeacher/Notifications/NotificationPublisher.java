@@ -21,7 +21,7 @@ public class NotificationPublisher {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_home_black_24dp)
                         .setContentTitle(title)
                         .setContentText(message)
                         .setAutoCancel(true);
