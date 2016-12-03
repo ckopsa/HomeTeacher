@@ -28,10 +28,6 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".Notifications.AlarmReceiver"
-            android:enabled="true"
-            android:exported="true"></receiver>
     </application>
 
 </manifest>
