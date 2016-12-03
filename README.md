@@ -1,4 +1,4 @@
-# Home-Teaching-Companion
+# HomeTeacher
 This application is designed to streamline the process of planning and reporting of Home Teaching.
 
 Current Features:
