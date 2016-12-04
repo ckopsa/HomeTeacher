@@ -26,12 +26,12 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
-import kopsabros.hometeacher.Content.FamilyContent;
-import kopsabros.hometeacher.Database.DBHelper;
-import kopsabros.hometeacher.Notifications.AlarmReceiver;
-import kopsabros.hometeacher.ViewFragments.AppointmentViewFragment;
-import kopsabros.hometeacher.ViewFragments.FamilyAppointmentsFragment;
-import kopsabros.hometeacher.ViewFragments.FamilyDetailFragment;
+import kopsabros.hometeacher.content.FamilyContent;
+import kopsabros.hometeacher.database.DBHelper;
+import kopsabros.hometeacher.notifications.AlarmReceiver;
+import kopsabros.hometeacher.fragments.AppointmentViewFragment;
+import kopsabros.hometeacher.fragments.FamilyAppointmentsFragment;
+import kopsabros.hometeacher.fragments.FamilyDetailFragment;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -542,8 +542,6 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         }
-
-        scheduleCheckAlarm();
     }
 
     @Override
@@ -568,6 +566,18 @@ public class MainActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    void checkAppts() {
+        boolean existsFamilyWithoutAppt = false;
+        for (FamilyContent.Family family :
+                FamilyContent.FAMILIES) {
+            if (family.getNextAppointment() == null) {
+                existsFamilyWithoutAppt = true;
+                break;
+            }
+        }
+        scheduleCheckAlarm(existsFamilyWithoutAppt);
+    }
+
     public void onSendReportOptionSelect(MenuItem item) {
         String emailBody = "";
         for (FamilyContent.Family fam :
@@ -587,20 +597,23 @@ public class MainActivity extends AppCompatActivity implements
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
-    public void scheduleCheckAlarm() {
+    public void scheduleCheckAlarm(boolean existsFamilyWithoutAppt) {
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
+        AlarmManager alarmManager =  (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         // every 24 hours
         // TODO: change from 5 seconds before release
-        alarmManager.setInexactRepeating(
+        alarmManager.setRepeating(
                 AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + 5000, //24 * 60 * 60 * 1000,
                 5000,  //24 * 60 * 60 * 1000,
                 pendingIntent
         );
+
+        if (!existsFamilyWithoutAppt) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     public void onSettingsSelect(MenuItem item) {

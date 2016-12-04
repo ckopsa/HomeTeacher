@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.ViewFragments;
+package kopsabros.hometeacher.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
-import kopsabros.hometeacher.Content.FamilyContent;
+import kopsabros.hometeacher.content.FamilyContent;
 import kopsabros.hometeacher.R;
-import kopsabros.hometeacher.RecyclerViewAdapters.MyFamilyAppointmentRecyclerViewAdapter;
+import kopsabros.hometeacher.adapters.MyFamilyAppointmentRecyclerViewAdapter;
 
 /**
  * A fragment representing a list of Items.

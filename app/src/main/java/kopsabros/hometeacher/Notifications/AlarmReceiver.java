@@ -1,25 +1,19 @@
-package kopsabros.hometeacher.Notifications;
+package kopsabros.hometeacher.notifications;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
 
-import kopsabros.hometeacher.Content.FamilyContent;
+import kopsabros.hometeacher.content.FamilyContent;
 
-public class AlarmReceiver extends BroadcastReceiver {
+public class AlarmReceiver extends WakefulBroadcastReceiver {
     public AlarmReceiver() {
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
-        // Does there exist a family without appt?
-        for (FamilyContent.Family family :
-                FamilyContent.FAMILIES) {
-            if (family.getNextAppointment() == null) {
-                new NotificationPublisher().sendNotification(context);
-                break;
-            }
-        }
+        Log.d("HOMETEACH", "Broadcast Received.");
+        new NotificationPublisher().sendNotification(context);
     }
 }

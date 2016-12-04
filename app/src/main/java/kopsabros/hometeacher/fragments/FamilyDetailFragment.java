@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.ViewFragments;
+package kopsabros.hometeacher.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,10 +17,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import kopsabros.hometeacher.Content.FamilyContent;
-import kopsabros.hometeacher.Database.DBHelper;
+import kopsabros.hometeacher.content.FamilyContent;
+import kopsabros.hometeacher.database.DBHelper;
 import kopsabros.hometeacher.R;
-import kopsabros.hometeacher.RecyclerViewAdapters.MyFamilyMemberRecyclerViewAdapter;
+import kopsabros.hometeacher.adapters.MyFamilyMemberRecyclerViewAdapter;
 
 /**
  * A fragment representing a single Family detail screen.

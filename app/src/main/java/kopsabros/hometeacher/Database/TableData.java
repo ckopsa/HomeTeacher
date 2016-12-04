@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.Database;
+package kopsabros.hometeacher.database;
 
 import android.provider.BaseColumns;
 

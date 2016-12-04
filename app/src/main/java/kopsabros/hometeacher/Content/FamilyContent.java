@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.Content;
+package kopsabros.hometeacher.content;
 
 import android.support.annotation.Nullable;
 

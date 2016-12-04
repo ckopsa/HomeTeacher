@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.RecyclerViewAdapters;
+package kopsabros.hometeacher.adapters;
 
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import kopsabros.hometeacher.Content.FamilyContent;
-import kopsabros.hometeacher.Content.FamilyContent.Family;
+import kopsabros.hometeacher.content.FamilyContent;
+import kopsabros.hometeacher.content.FamilyContent.Family;
 import kopsabros.hometeacher.R;
-import kopsabros.hometeacher.ViewFragments.FamilyDetailFragment;
+import kopsabros.hometeacher.fragments.FamilyDetailFragment;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Family} and makes a call to the

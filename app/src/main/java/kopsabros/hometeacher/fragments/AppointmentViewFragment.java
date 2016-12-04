@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.ViewFragments;
+package kopsabros.hometeacher.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import kopsabros.hometeacher.R;
-import kopsabros.hometeacher.RecyclerViewAdapters.MyAppointmentRecyclerViewAdapter;
+import kopsabros.hometeacher.adapters.MyAppointmentRecyclerViewAdapter;
 
-import static kopsabros.hometeacher.Content.FamilyContent.*;
+import static kopsabros.hometeacher.content.FamilyContent.*;
 
 /**
  * A fragment representing a list of Items.

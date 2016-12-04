@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.Notifications;
+package kopsabros.hometeacher.notifications;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,7 +21,7 @@ public class NotificationPublisher {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_sms_reminder)
                         .setContentTitle(title)
                         .setContentText(message)
                         .setAutoCancel(true);

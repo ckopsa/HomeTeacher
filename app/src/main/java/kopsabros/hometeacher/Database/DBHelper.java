@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.Database;
+package kopsabros.hometeacher.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,11 +11,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import kopsabros.hometeacher.Content.FamilyContent;
+import kopsabros.hometeacher.content.FamilyContent;
 
-import static kopsabros.hometeacher.Database.TableData.AppointmentInfo;
-import static kopsabros.hometeacher.Database.TableData.FamilyInfo;
-import static kopsabros.hometeacher.Database.TableData.FamilyMemberInfo;
+import static kopsabros.hometeacher.database.TableData.AppointmentInfo;
+import static kopsabros.hometeacher.database.TableData.FamilyInfo;
+import static kopsabros.hometeacher.database.TableData.FamilyMemberInfo;
 
 /**
  * Created by Aghbac on 6/20/16.

@@ -1,4 +1,4 @@
-package kopsabros.hometeacher.RecyclerViewAdapters;
+package kopsabros.hometeacher.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import kopsabros.hometeacher.Content.FamilyContent.Appointment;
+import kopsabros.hometeacher.content.FamilyContent.Appointment;
 import kopsabros.hometeacher.R;
-import kopsabros.hometeacher.ViewFragments.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
+import kopsabros.hometeacher.fragments.AppointmentViewFragment.OnAppointmentListFragmentInteractionListener;
 
-import static kopsabros.hometeacher.Content.FamilyContent.Family;
+import static kopsabros.hometeacher.content.FamilyContent.Family;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Appointment} and makes a call to the
